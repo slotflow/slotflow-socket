@@ -1,9 +1,8 @@
 import { Router } from 'express';
+import { messageController } from './message.controller';
 
 const router = Router();
 
-router.get('/users');
-
-router.get('/:id');
+router.get('/:toUserId', messageController.getMessages);
 
 router.get('/send/:id');
