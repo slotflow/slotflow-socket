@@ -1,10 +1,11 @@
-import { CommonRequest, GetAllMessage } from "../../infrastructure/dtos/message.dto";
+import { Message } from "../entities/message.entity";
+import { CommonRequest, GetAllMessageResponse, SendMessageRequestForRepository } from "../../infrastructure/dtos/message.dto";
 
 export interface IMessageRepository {
 
-    getAllMessages(payload: CommonRequest): Promise<GetAllMessage>;
+    getAllMessages(payload: CommonRequest): Promise<GetAllMessageResponse>;
     
-    // createMessage(data: CommonRequest): Promise<Message>;
+    createMessage(payload: SendMessageRequestForRepository): Promise<Message>;
     
     // deleteMessage(data: CommonRequest): Promise<ApiResponse>;
 }

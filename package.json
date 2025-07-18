@@ -12,6 +12,7 @@
   "author": "midhunkalarikkal",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/lib-storage": "^3.848.0",
     "@upstash/redis": "^1.35.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

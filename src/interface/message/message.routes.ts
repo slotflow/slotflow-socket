@@ -5,4 +5,6 @@ const router = Router();
 
 router.get('/:toUserId', messageController.getMessages);
 
-router.get('/send/:id');
+router.get('/send/:toUserId', messageController.);
+
+export default router;
