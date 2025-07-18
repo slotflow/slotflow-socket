@@ -8,7 +8,7 @@ const upload = multer({ storage: storage });
 
 const router = Router();
 
-router.get('/:toUserId', messageController.getMessages);
+router.get('/:toUserId',AuthMiddleware, messageController.getMessages);
 
 router.post('/send/:toUserId',AuthMiddleware, upload.single("messageImage"), messageController.sendMessage);
 

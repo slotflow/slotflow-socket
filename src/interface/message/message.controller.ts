@@ -22,10 +22,12 @@ export class MessageController {
 
     async getMessages(req:Request, res: Response) {
         try {
+            console.log("req.params : ",req.params);
             const validateParams = commonParamsZodSchema.parse(req.params);
             const { toUserId } = validateParams;
             const fromUserId = req.user.userOrProviderId;
-            const result = await this.getAllMessagesUseCase.execute({ fromUserId: new Types.ObjectId(fromUserId), toUserId: new Types.ObjectId(toUserId)})
+            const result = await this.getAllMessagesUseCase.execute({ fromUserId: new Types.ObjectId(fromUserId), toUserId: new Types.ObjectId(toUserId)});
+            console.log("result : ",result);
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);

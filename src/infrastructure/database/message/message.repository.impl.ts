@@ -24,14 +24,12 @@ export class MessageRepositoryImpl implements IMessageRepository {
                 { senderId: toUserId, receiverId: fromUserId },
             ]
         }, {
-            $project: {
-                _id: 1,
-                senderId: 1,
-                receiverId: 1,
-                text: 1,
-                image: 1,
-                createdAt: 1,
-            }
+            _id: 1,
+            senderId: 1,
+            receiverId: 1,
+            text: 1,
+            image: 1,
+            createdAt: 1,
         }).lean();
 
         return messages.map(message => this.mapToEntity(message));

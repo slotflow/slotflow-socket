@@ -13,6 +13,6 @@ export class GetAllMessagesUseCase {
 
         const result = await this.messageRepositoryImpl.getAllMessages({ fromUserId, toUserId });
 
-        return { data: result }
+        return { success: true, message: "Fetched messages", data: result }
     }
 }
