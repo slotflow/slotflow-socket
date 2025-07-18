@@ -1,3 +1,4 @@
+import { File } from "multer";
 import { Request } from 'express';
 
 export interface DecodedUser {
@@ -12,6 +13,7 @@ declare global {
     namespace Express {
         interface Request {
             user: DecodedUser;
+            file?: File;
         }
     }
 }

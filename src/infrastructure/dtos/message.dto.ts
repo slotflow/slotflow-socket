@@ -5,15 +5,24 @@ export interface CommonRequest {
     fromUserId: Types.ObjectId,
     toUserId: Types.ObjectId,
 }
+
+// **** used in getAllMessage.use-case **** \\
+// Used as the response type of the get all message usecase
 export type GetAllMessageResponse = Array<Pick<Message, "_id" | "createdAt" | "image" | "receiverId" | "senderId" | "text">>;
 
-type SendMessage = Pick<Message, "senderId" | "receiverId" | "text" >;
-// 2. Request from client to controller/service layer — includes the file
-export interface SendMessageRequest extends SendMessage {
-  file: File;
-}
 
-// 3. Repository layer version — replaces `file` with the final `image` field
+// **** used in sendMessage.use-case **** \\
+// Used as the request type of the send message usecase
+type SendMessage = Pick<Message, "senderId" | "receiverId" | "text" >;
+interface MulterFile {
+  originalname: string;
+  buffer: Buffer;
+  mimetype: string;
+}
+export interface SendMessageRequest extends SendMessage {
+  file?: MulterFile;
+}
+// Used as the request type of the create new message repository and repository implementation method
 export interface SendMessageRequestForRepository
   extends Omit<SendMessageRequest, "file">,
-    Pick<Message, "image"> {}
+    Partial<Pick<Message, "image">> {}
