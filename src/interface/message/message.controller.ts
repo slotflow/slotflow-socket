@@ -20,14 +20,12 @@ export class MessageController {
         this.sendMessage = this.sendMessage.bind(this);
     }
 
-    async getMessages(req:Request, res: Response) {
+    async getMessages(req: Request, res: Response) {
         try {
-            console.log("req.params : ",req.params);
             const validateParams = commonParamsZodSchema.parse(req.params);
             const { toUserId } = validateParams;
             const fromUserId = req.user.userOrProviderId;
-            const result = await this.getAllMessagesUseCase.execute({ fromUserId: new Types.ObjectId(fromUserId), toUserId: new Types.ObjectId(toUserId)});
-            console.log("result : ",result);
+            const result = await this.getAllMessagesUseCase.execute({ fromUserId: new Types.ObjectId(fromUserId), toUserId: new Types.ObjectId(toUserId) });
             res.status(200).json(result);
         } catch (error) {
             HandleError.handle(error, res);
@@ -36,9 +34,9 @@ export class MessageController {
 
     async sendMessage(req: Request, res: Response) {
         try {
-            console.log("req.params : ",req.params);
-            console.log("req.file : ",req.file);
-            console.log("req.body : ",req.body);
+            console.log("req.params : ", req.params);
+            console.log("req.file : ", req.file);
+            console.log("req.body : ", req.body);
             const fromUserId = req.user.userOrProviderId;
             const validateParams = commonParamsZodSchema.parse(req.params);
             const { toUserId } = validateParams;
@@ -51,14 +49,14 @@ export class MessageController {
                 file: file,
                 text: text
             });
-            console.log("result : ",result);
+            console.log("result : ", result);
             res.status(200).json(result);
         } catch (error) {
-            console.log("error : ",error);
+            console.log("error : ", error);
             HandleError.handle(error, res);
         }
     }
 }
 
-const messageController = new MessageController( getAllMessagesUseCase, sendMessageUseCase );
+const messageController = new MessageController(getAllMessagesUseCase, sendMessageUseCase);
 export { messageController };

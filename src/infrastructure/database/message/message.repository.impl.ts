@@ -18,18 +18,14 @@ export class MessageRepositoryImpl implements IMessageRepository {
 
     async getAllMessages(payload: CommonRequest): Promise<GetAllMessageResponse> {
         const { fromUserId, toUserId } = payload;
+
         let messages = await MessageModel.find({
             $or: [
                 { senderId: fromUserId, receiverId: toUserId },
                 { senderId: toUserId, receiverId: fromUserId },
             ]
         }, {
-            _id: 1,
-            senderId: 1,
-            receiverId: 1,
-            text: 1,
-            image: 1,
-            createdAt: 1,
+            updatedAt: 0
         }).lean();
 
         return messages.map(message => this.mapToEntity(message));
