@@ -24,8 +24,6 @@ export class MessageRepositoryImpl implements IMessageRepository {
                 { senderId: fromUserId, receiverId: toUserId },
                 { senderId: toUserId, receiverId: fromUserId },
             ]
-        }, {
-            updatedAt: 0
         }).lean();
 
         return messages.map(message => this.mapToEntity(message));

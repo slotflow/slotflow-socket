@@ -22,7 +22,7 @@ const signedUrlService = new SignedUrlService(aws_config.aws_s3Bucket_name, sign
 const fileUploadService = new FileUploadService(s3Client, signedUrlService, s3KeyGenerator);
 
 const sendMessageUseCase = new SendMessageUseCase(messageRepositoryIml, signedUrlService, fileUploadService);
-const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepositoryIml);
+const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepositoryIml, signedUrlService);
 
 export class MessageController {
     constructor(

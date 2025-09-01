@@ -8,7 +8,7 @@ export interface CommonRequest {
 
 // **** used in getAllMessage.use-case **** \\
 // Used as the response type of the get all message usecase
-export type GetAllMessageResponse = Array<Pick<Message, "_id" | "createdAt" | "image" | "receiverId" | "senderId" | "text">>;
+export type GetAllMessageResponse = Array<Message>;
 
 
 // **** used in sendMessage.use-case **** \\
