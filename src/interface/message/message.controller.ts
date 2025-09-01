@@ -34,9 +34,6 @@ export class MessageController {
 
     async sendMessage(req: Request, res: Response) {
         try {
-            console.log("req.params : ", req.params);
-            console.log("req.file : ", req.file);
-            console.log("req.body : ", req.body);
             const fromUserId = req.user.userOrProviderId;
             const validateParams = commonParamsZodSchema.parse(req.params);
             const { toUserId } = validateParams;
@@ -49,7 +46,6 @@ export class MessageController {
                 file: file,
                 text: text
             });
-            console.log("result : ", result);
             res.status(200).json(result);
         } catch (error) {
             console.log("error : ", error);
