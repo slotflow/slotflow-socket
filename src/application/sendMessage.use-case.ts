@@ -1,58 +1,40 @@
-import { aws_config } from "../config/env";
-import { s3Client } from "../config/aws_s3";
-import { Upload } from "@aws-sdk/lib-storage";
 import { Message } from "../domain/entities/message.entity";
 import { ApiResponse } from "../infrastructure/dtos/common.dto";
-import { generateS3Key } from "../infrastructure/helper/generateS3Key";
 import { SendMessageRequest } from "../infrastructure/dtos/message.dto";
 import { getReceiverSocketId, io } from "../infrastructure/lib/socket.io";
-import { generateSignedUrl } from "../infrastructure/services/s3/singedUrl.service";
+import { FileUploadService } from "../infrastructure/services/s3/fileUpload";
+import { SignedUrlService } from "../infrastructure/services/s3/singedUrl.service";
 import { MessageRepositoryImpl } from "../infrastructure/database/message/message.repository.impl";
 
 export class SendMessageUseCase {
     constructor(
         private messageRepositoryImpl: MessageRepositoryImpl,
+        private signedUrlService: SignedUrlService,
+        private fileUploadService: FileUploadService,
     ) { }
 
     async execute(payload: SendMessageRequest): Promise<ApiResponse<Message>> {
         try {
             const { senderId, receiverId, text, file } = payload;
             
-            let imageUrl: string | undefined;
+            let imageKey: string | undefined;
             if (file) {
-                const key = generateS3Key({
-                    folder: "slotflow-chat-media",
-                    userId: senderId,
-                    originalname: file.originalname,
+                imageKey = await this.fileUploadService.uploadFile({
+                    folder: `slotflow-chat-${senderId+"to"+receiverId}`,
+                    userId: senderId.toString(),
+                    file: file,
                 });
-                
-                const params = {
-                    Bucket: aws_config.aws_s3Bucket_name,
-                    Key: key,
-                    Body: file.buffer,
-                    ContentType: file.mimetype,
-                };
-                
-                const upload = new Upload({
-                    client: s3Client,
-                    params: params,
-                });
-                
-                const s3UploadResponse = await upload.done();
-                imageUrl = s3UploadResponse?.Location;
-                if (!imageUrl) throw new Error("Image sending failed");
             }
-            
             
             const newMessage = await this.messageRepositoryImpl.createMessage({
                 senderId,
                 receiverId,
                 text,
-                image: imageUrl
+                image: imageKey
             });
             
             if (newMessage.image) {
-                newMessage.image = await generateSignedUrl(newMessage.image);
+                newMessage.image = await this.signedUrlService.generateSignedUrl(newMessage.image);
             }
             
             const receiverSocketId = await getReceiverSocketId(receiverId);

@@ -1,22 +1,24 @@
 import { Types } from "mongoose";
-import { generateRandomString } from "./stringGenerator";
+import { RandomStringGenerator } from "./generateRandomString";
 
 interface GenerateS3KeyParams {
   folder: string;
-  userId: Types.ObjectId;
+  userId: Types.ObjectId | string;
   originalname: string;
 }
 
-export const generateS3Key = ({
-  folder,
-  userId,
-  originalname,
-}: GenerateS3KeyParams): string => {
-  const trimmedFileName = originalname.replace(/\s+/g, "_");
-  const fileExtension = trimmedFileName.split(".").pop() ?? "";
-  const baseName = trimmedFileName.substring(0, trimmedFileName.lastIndexOf(".")) || "file";
-  const timestamp = Date.now();
-  const randomStr = generateRandomString();
+export class S3KeyGenerator {
+  constructor(
+    private randomStringGenerator: RandomStringGenerator
+  ) { }
+  generateS3Key({ folder, userId, originalname }: GenerateS3KeyParams): string {
+    const trimmedFileName = originalname.replace(/\s+/g, "_");
+    const fileExtension = trimmedFileName.split(".").pop() ?? "";
+    const baseName =
+      trimmedFileName.substring(0, trimmedFileName.lastIndexOf(".")) || "file";
+    const timestamp = Date.now();
+    const randomStr = this.randomStringGenerator.generate();
 
-  return `${folder}/${userId}_${baseName}_${timestamp}_${randomStr}.${fileExtension}`;
-};
+    return `${folder}/${userId}_${baseName}_${timestamp}_${randomStr}.${fileExtension}`;
+  }
+}

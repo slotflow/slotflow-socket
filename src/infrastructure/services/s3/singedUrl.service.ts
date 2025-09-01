@@ -2,34 +2,31 @@ import { aws_config } from '../../../config/env';
 import { s3Client } from '../../../config/aws_s3';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { SignedUrlCacheModel } from "../../database/singedUrl/singedUrlCache.model";
+import { SignedUrlRepositoryImpl } from '../../database/singedUrl/signedUrlCacheRepositoryImpl';
 
-export async function generateSignedUrl(key: string, expires: number = 172800): Promise<string> {
+export class SignedUrlService {
 
-  const existing = await SignedUrlCacheModel.findOne({ key });
-  if (existing && existing.expiresAt > new Date()) {
-    return existing.url;
+  constructor(
+    private bucketName: string = aws_config.aws_s3Bucket_name!,
+    private signedUrlRepositoryImpl: SignedUrlRepositoryImpl
+) {}
+  async generateSignedUrl(s3Key: string, expires: number = 172800): Promise<string> {
+
+    const existing = await this.signedUrlRepositoryImpl.findOneSignedUrl(s3Key);
+    if (existing && existing.expiresAt > new Date()) {
+      return existing.url;
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: this.bucketName,
+      Key: s3Key,
+    });
+
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: expires });
+    const expiresAt = new Date(Date.now() + expires * 1000);
+
+    await this.signedUrlRepositoryImpl.findOneSignedUrlAndUpdate(s3Key,signedUrl,expiresAt);
+
+    return signedUrl;
   }
-
-  const urlParts = key.split('/');
-  const s3Key = urlParts.slice(3).join('/');
-  
-  if (!s3Key) throw new Error('Invalid S3 key');
-
-  const command = new GetObjectCommand({
-    Bucket: aws_config.aws_s3Bucket_name!,
-    Key: s3Key,
-  });
-
-  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: expires });
-
-  const expiresAt = new Date(Date.now() + expires * 1000);
-
-  await SignedUrlCacheModel.findOneAndUpdate(
-    { key },
-    { key, url: signedUrl, expiresAt },
-    { upsert: true, new: true }
-  );
-
-  return signedUrl;
 }

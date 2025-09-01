@@ -1,14 +1,27 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
+import { aws_config } from "../../config/env";
+import { S3Client } from "@aws-sdk/client-s3";
 import { HandleError } from "../../infrastructure/error/error";
+import { S3KeyGenerator } from "../../infrastructure/helper/generateS3Key";
 import { SendMessageUseCase } from "../../application/sendMessage.use-case";
+import { FileUploadService } from "../../infrastructure/services/s3/fileUpload";
 import { GetAllMessagesUseCase } from "../../application/getAllMessage.use-case";
+import { SignedUrlService } from "../../infrastructure/services/s3/singedUrl.service";
+import { RandomStringGenerator } from "../../infrastructure/helper/generateRandomString";
 import { MessageRepositoryImpl } from "../../infrastructure/database/message/message.repository.impl";
 import { commonParamsZodSchema, sendMessageRequestZodSchema } from "../../infrastructure/zod/message.zod";
+import { SignedUrlRepositoryImpl } from "../../infrastructure/database/singedUrl/signedUrlCacheRepositoryImpl";
 
+const s3Client = new S3Client();
 const messageRepositoryIml = new MessageRepositoryImpl();
+const randomStringGenerator = new RandomStringGenerator();
+const s3KeyGenerator = new S3KeyGenerator(randomStringGenerator);
+const signedUrlCacheRepositoryImpl = new SignedUrlRepositoryImpl();
+const signedUrlService = new SignedUrlService(aws_config.aws_s3Bucket_name, signedUrlCacheRepositoryImpl);
+const fileUploadService = new FileUploadService(s3Client, signedUrlService, s3KeyGenerator);
 
-const sendMessageUseCase = new SendMessageUseCase(messageRepositoryIml);
+const sendMessageUseCase = new SendMessageUseCase(messageRepositoryIml, signedUrlService, fileUploadService);
 const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepositoryIml);
 
 export class MessageController {

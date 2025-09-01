@@ -20,7 +20,7 @@ interface MulterFile {
   mimetype: string;
 }
 export interface SendMessageRequest extends SendMessage {
-  file?: MulterFile;
+  file?: Express.Multer.File;
 }
 // Used as the request type of the create new message repository and repository implementation method
 export interface SendMessageRequestForRepository
