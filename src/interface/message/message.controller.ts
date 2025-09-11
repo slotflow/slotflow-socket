@@ -15,16 +15,16 @@ import { SignedUrlRepositoryImpl } from "../../infrastructure/database/singedUrl
 
 const s3Client = new S3Client();
 const messageRepositoryIml = new MessageRepositoryImpl();
+const signedUrlCacheRepositoryImpl = new SignedUrlRepositoryImpl();
 const randomStringGenerator = new RandomStringGenerator();
 const s3KeyGenerator = new S3KeyGenerator(randomStringGenerator);
-const signedUrlCacheRepositoryImpl = new SignedUrlRepositoryImpl();
 const signedUrlService = new SignedUrlService(aws_config.aws_s3Bucket_name, signedUrlCacheRepositoryImpl);
 const fileUploadService = new FileUploadService(s3Client, signedUrlService, s3KeyGenerator);
 
 const sendMessageUseCase = new SendMessageUseCase(messageRepositoryIml, signedUrlService, fileUploadService);
 const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepositoryIml, signedUrlService);
 
-export class MessageController {
+class MessageController {
     constructor(
         private getAllMessagesUseCase: GetAllMessagesUseCase,
         private sendMessageUseCase: SendMessageUseCase,
