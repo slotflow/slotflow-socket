@@ -8,5 +8,5 @@ const PORT = process.env.PORT || 4000;
 
 connectDB();
 socketServer.listen(PORT, () => {
-    console.log(`Chat Module server is on up http://localhost:${PORT}`)
+    console.log(`RealTime Module server is on up http://localhost:${PORT}`)
 })

@@ -1,0 +1,23 @@
+# -------------------------------
+# Stage 1: Build
+# -------------------------------
+FROM node:18 AS build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN npm run bundle
+
+# -------------------------------
+# Stage 2: Run (production)
+# -------------------------------
+FROM node:18-alpine
+
+WORKDIR /app
+COPY --from=build /app/dist-bundle ./dist-bundle
+COPY package*.json ./
+RUN npm install --omit=dev
+EXPOSE 4000
+CMD ["node", "dist-bundle/server.js"]

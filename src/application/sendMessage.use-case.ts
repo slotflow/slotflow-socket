@@ -1,7 +1,7 @@
 import { Message } from "../domain/entities/message.entity";
 import { ApiResponse } from "../infrastructure/dtos/common.dto";
 import { SendMessageRequest } from "../infrastructure/dtos/message.dto";
-import { getReceiverSocketId, io } from "../infrastructure/lib/socket.io";
+import { getReceiverSocketId, chatIo } from "../infrastructure/lib/socket.io";
 import { FileUploadService } from "../infrastructure/services/s3/fileUpload";
 import { SignedUrlService } from "../infrastructure/services/s3/singedUrl.service";
 import { MessageRepositoryImpl } from "../infrastructure/database/message/message.repository.impl";
@@ -39,7 +39,7 @@ export class SendMessageUseCase {
             
             const receiverSocketId = await getReceiverSocketId(receiverId);
             if (receiverSocketId) {
-                io.to(receiverSocketId).emit("newMessage", newMessage);
+                chatIo.to(receiverSocketId).emit("newMessage", newMessage);
             }
             
             return { data: newMessage }

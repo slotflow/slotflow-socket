@@ -6,11 +6,9 @@ import { Server } from "socket.io";
 
 const socketServer = http.createServer(app);
 
-const io = new Server(socketServer, {
-    cors: {
-        origin: ["http://localhost:5173"],
-    },
-});
+const chatIo = new Server(socketServer, { path: "/chat", cors: { origin: ["http://localhost:5173"], }, });
+
+const videoIo = new Server(socketServer, { path: "/video", cors: { origin: "http://localhost:5173" } });
 
 export async function getReceiverSocketId(userId: Types.ObjectId): Promise<string | null> {
     return await redis.get(`socket:${userId}`);
@@ -21,66 +19,111 @@ async function getOnlineUsers(): Promise<string[]> {
     return keys.map((key) => key.split(":")[1]);
 }
 
-const emailToSocketIdMap = new Map();
-const socketIdToEmailMap = new Map();
 
-io.on("connection", async (socket) => {
+
+chatIo.on("connection", async (chatSocket) => {
     (async () => {
-        const queryUserId = socket.handshake.query.userId;
+        console.log("socket io coneected");
+
+        const queryUserId = chatSocket.handshake.query.userId;
         const userId = typeof queryUserId === "string" ? queryUserId : null;
 
         if (userId) {
-            await redis.set(`socket:${userId}`, socket.id);
+            await redis.set(`socket:${userId}`, chatSocket.id);
         }
 
-        io.emit("getOnlineUsers", await getOnlineUsers());
+        chatIo.emit("getOnlineUsers", await getOnlineUsers());
 
-        socket.on("typing", async ({ fromUserId, toUserId }: { fromUserId: string; toUserId: string }) => {
+        chatSocket.on("typing", async ({ fromUserId, toUserId }: { fromUserId: string; toUserId: string }) => {
             const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
-            if (toSocketId) io.to(toSocketId).emit("typing", { fromUserId, toUserId });
+            if (toSocketId) chatIo.to(toSocketId).emit("typing", { fromUserId, toUserId });
         });
 
-        socket.on("stopTyping", async ({ fromUserId, toUserId }: { fromUserId: string; toUserId: string }) => {
+        chatSocket.on("stopTyping", async ({ fromUserId, toUserId }: { fromUserId: string; toUserId: string }) => {
             const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
-            if (toSocketId) io.to(toSocketId).emit("stopTyping", { fromUserId, toUserId });
+            if (toSocketId) chatIo.to(toSocketId).emit("stopTyping", { fromUserId, toUserId });
         });
 
-        socket.on("disconnect", async () => {
+        chatSocket.on("disconnect", async () => {
             if (userId) {
                 await redis.del(`socket:${userId}`);
             }
-            io.emit("getOnlineUsers", await getOnlineUsers());
+            chatIo.emit("getOnlineUsers", await getOnlineUsers());
         });
 
-        // 🔴 Video call signaling events
-        socket.on("room:join", data => {
-            console.log("data : ",data);
-            const { email, roomId } = data;
-            emailToSocketIdMap.set(email, socket.id);
-            socketIdToEmailMap.set(socket.id, email);
-            io.to(socket.id).emit("room:join", data);
-        })
-
-        socket.on("call-offer", async ({ toUserId, offer }) => {
-            const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
-            if (toSocketId) io.to(toSocketId).emit("call-offer", { fromUserId: userId, offer });
-        });
-
-        socket.on("call-answer", async ({ toUserId, answer }) => {
-            const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
-            if (toSocketId) io.to(toSocketId).emit("call-answer", { answer });
-        });
-
-        socket.on("ice-candidate", async ({ toUserId, candidate }) => {
-            const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
-            if (toSocketId) io.to(toSocketId).emit("ice-candidate", { candidate });
-        });
-
-        socket.on("disconnectVideoCall", async () => {
-            if (userId) await redis.del(`socket:${userId}`);
-            io.emit("getOnlineUsers", await getOnlineUsers());
-        });
     })();
 });
 
-export { io, socketServer };
+const emailToSocketIdMap = new Map();
+const socketidToEmailMap = new Map();
+
+// videoIo.on("connection", async (videoSocket) => {
+  
+//   videoSocket.on("room:join", (data) => {
+//     const { uid, room , username} = data;
+//     console.log(`${username} joined room ${room}`);
+//     emailToSocketIdMap.set(uid, videoSocket.id);
+//     socketidToEmailMap.set(videoSocket.id, uid);
+//     videoIo.to(room).emit("user:joined", { id: videoSocket.id, username });
+//     videoSocket.join(room);
+//     videoIo.to(videoSocket.id).emit("room:join", data);
+//   });
+
+//   videoSocket.on("user:call", ({ to, offer }) => {
+//     videoIo.to(to).emit("incomming:call", { from: videoSocket.id, offer });
+//   });
+
+//   videoSocket.on("call:accepted", ({ to, ans }) => {
+//     videoIo.to(to).emit("call:accepted", { from: videoSocket.id, ans });
+//   });
+
+//   videoSocket.on("peer:nego:needed", ({ to, offer }) => {
+//     console.log("peer:nego:needed", offer);
+//     videoIo.to(to).emit("peer:nego:needed", { from: videoSocket.id, offer });
+//   });
+
+//   videoSocket.on("peer:nego:done", ({ to, ans }) => {
+//     console.log("peer:nego:done", ans);
+//     videoIo.to(to).emit("peer:nego:final", { from: videoSocket.id, ans });
+//   });
+// })
+
+videoIo.on("connection", (videoSocket) => {
+  console.log(`Socket connected: ${videoSocket.id}`);
+
+  videoSocket.on("room:join", ({ roomId, user }) => {
+    videoSocket.join(roomId);
+    console.log(`${user.email} joined room ${roomId}`);
+
+    // Notify others that someone joined
+    videoSocket.to(roomId).emit("user:joined", { id: videoSocket.id, user });
+  });
+
+  videoSocket.on("user:call", ({ to, offer }) => {
+    videoIo.to(to).emit("incomming:call", { from: videoSocket.id, offer });
+  });
+
+  videoSocket.on("call:accepted", ({ to, ans }) => {
+    videoIo.to(to).emit("call:accepted", { from: videoSocket.id, ans });
+  });
+
+  videoSocket.on("peer:nego:needed", ({ to, offer }) => {
+    videoIo.to(to).emit("peer:nego:needed", { from: videoSocket.id, offer });
+  });
+
+  videoSocket.on("peer:nego:done", ({ to, ans }) => {
+    videoIo.to(to).emit("peer:nego:final", { from: videoSocket.id, ans });
+  });
+
+  videoSocket.on("room:leave", ({ roomId }) => {
+    videoSocket.leave(roomId);
+    videoSocket.to(roomId).emit("user:left", { id: videoSocket.id });
+  });
+
+  videoSocket.on("disconnect", () => {
+    console.log(`Socket disconnected: ${videoSocket.id}`);
+  });
+});
+
+
+export { chatIo, socketServer, videoIo };

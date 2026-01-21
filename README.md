@@ -19,3 +19,8 @@ This module is designed to work **alongside the monolithic backend**, offering a
 - **Authentication**: JWT-based (via shared token from main backend)
 - **Database**: MongoDB (via Mongoose)
 - **State Sync**: Upstash Redis (optional pub/sub or chat caching)
+
+
+
+
+
