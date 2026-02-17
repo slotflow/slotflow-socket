@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Request, Response } from "express";
-import { aws_config } from "../../config/env";
+import { awsConfig } from "../../config/env";
 import { S3Client } from "@aws-sdk/client-s3";
 import { HandleError } from "../../infrastructure/error/error";
 import { S3KeyGenerator } from "../../infrastructure/helper/generateS3Key";
@@ -18,7 +18,7 @@ const messageRepositoryIml = new MessageRepositoryImpl();
 const signedUrlCacheRepositoryImpl = new SignedUrlRepositoryImpl();
 const randomStringGenerator = new RandomStringGenerator();
 const s3KeyGenerator = new S3KeyGenerator(randomStringGenerator);
-const signedUrlService = new SignedUrlService(aws_config.aws_s3Bucket_name, signedUrlCacheRepositoryImpl);
+const signedUrlService = new SignedUrlService(awsConfig.awsS3BucketName, signedUrlCacheRepositoryImpl);
 const fileUploadService = new FileUploadService(s3Client, signedUrlService, s3KeyGenerator);
 
 const sendMessageUseCase = new SendMessageUseCase(messageRepositoryIml, signedUrlService, fileUploadService);

@@ -1,6 +1,6 @@
 import { Upload } from "@aws-sdk/lib-storage";
 import { S3Client } from "@aws-sdk/client-s3";
-import { aws_config } from "../../../config/env";
+import { awsConfig } from "../../../config/env";
 import { SignedUrlService } from "./singedUrl.service";
 import { S3KeyGenerator } from "../../helper/generateS3Key";
 
@@ -26,7 +26,7 @@ export class FileUploadService {
     });
 
     const params = {
-      Bucket: aws_config.aws_s3Bucket_name as string,
+      Bucket: awsConfig.awsS3BucketName,
       Key: s3Key,
       Body: file.buffer,
       ContentType: file.mimetype,

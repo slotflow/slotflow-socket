@@ -2,27 +2,28 @@ import cors from 'cors';
 import helmet from 'helmet';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import messageRoutes from './interface/message/message.routes';
+import { log } from './shared/logger/logger';
+import messageRoutes from './presentation/message/message.routes';
 
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-    allowedHeaders: ['Content-type', 'Authorization', 'Accept', 'X-Requested-with'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: "http://localhost:5173",
+  credentials: true,
+  allowedHeaders: ['Content-type', 'Authorization', 'Accept', 'X-Requested-with'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
 app.use(helmet());
-app.use(express.json({ limit:"50mb" }));
-app.use(express.urlencoded({ extended : true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/health", (req, res) => {
-    console.log("getting the health check api call")
-  res.status(200).json({ status: "ok" });
+  log.info("getting the health check api call")
+  res.status(200).json({ status: "Slotflow Socket Service Is Live" });
 });
 
-app.use('/api/message',messageRoutes);
+app.use('/api/message', messageRoutes);
 
 export default app;
