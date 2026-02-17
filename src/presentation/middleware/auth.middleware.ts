@@ -1,30 +1,33 @@
-import jwt from 'jsonwebtoken';
-import { DecodedUser } from '../../express';
-import { jwtConfig } from "../../config/env";
+import { log } from "../../shared/logger/logger";
+import { Role } from "../../domain/enums/common.enums";
 import { NextFunction, Request, Response } from "express";
-import { JWTService } from '../../infrastructure/security/jwt';
+import { DecodedUser } from "../../application/dtos/common.dtos";
 
-export const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
-
-    const jwtSecret = jwtConfig.jwtSecret;
-    const token = req.cookies.token;
-    const currentTime = Date.now();
-
-    if (!token) {
-        res.status(401).json({ success: false, message: "Unauthorized, no token." });
-        return;
-    }
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const decoded = JWTService.verifyToken(token);
-        if (decoded && typeof decoded !== "string" && decoded.exp && currentTime > decoded.exp * 1000) {
-            res.status(401).json({ success: false, message: "Unauthorized: Token expired." });
-            return;
-        }
+        const userId = req.headers["x-user-id"];
+        const role = req.headers["x-user-role"];
 
-        req.user = decoded as DecodedUser;
+        if (role !== Role.ADMIN && !userId) {
+            res.status(401).json({ success: false, message: "Unauthenticated request" });
+            return;
+        };
+
+        const normalizedUserId = Array.isArray(userId) ? userId[0] : userId;
+        const normalizedRole = Array.isArray(role)
+            ? (role[0] as Role)
+            : (role as Role);
+
+        req.user = {
+            userOrProviderId: normalizedUserId,
+            role: normalizedRole,
+        } as DecodedUser;
+
         next();
     } catch (error) {
+        log.error("authMiddleware error", error as Error);
         res.status(401).json({ success: false, message: "Unauthorized: Invalid token." });
-    }
-}
+        return;
+    };
+};

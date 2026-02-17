@@ -6,8 +6,8 @@ dotenv.config();
 const validator = new Validator();
 
 export const mongoConfig = {
-    port: process.env.MONGODB_PORT || 5000,
-    mongoURL : process.env.NODE_ENV === "development" ? process.env.MONGO_URI_DEV : process.env.MONGO_URI 
+    port: validator.requireNumber("MONGODB_PORT") || 5000,
+    mongoURL : validator.requireEnv("NODE_ENV") === "development" ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI") 
 }
 
 export const redisConfig = {
@@ -16,7 +16,7 @@ export const redisConfig = {
 }
 
 export const jwtConfig = {
-    jwtSecret : process.env.JWT_SECRET,
+    jwtSecret : validator.requireEnv("JWT_SECRET"),
 }
 
 export const awsConfig = {

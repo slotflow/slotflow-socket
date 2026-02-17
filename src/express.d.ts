@@ -1,19 +1,13 @@
-import { File } from "multer";
-import { Request } from 'express';
-
-export interface DecodedUser {
-    userOrProviderId: string;
-    role: string;
-    exp: number;
-    iat: number;
-}
+import { Role } from "./domain/enums/role.enum";
+import { DecodedUser } from "./application/dtos/common.dto";
 
 // Extend the Request interface
 declare global {
     namespace Express {
+        interface User extends DecodedUser { }
         interface Request {
-            user: DecodedUser;
-            file?: File;
-        }
-    }
-}
+            user: User;
+        };
+    };
+};
+

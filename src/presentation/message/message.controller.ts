@@ -10,7 +10,7 @@ import { GetAllMessagesUseCase } from "../../application/getAllMessage.use-case"
 import { SignedUrlService } from "../../infrastructure/services/s3/singedUrl.service";
 import { RandomStringGenerator } from "../../infrastructure/helper/generateRandomString";
 import { MessageRepositoryImpl } from "../../infrastructure/database/message/message.repository.impl";
-import { commonParamsZodSchema, sendMessageRequestZodSchema } from "../../infrastructure/zod/message.zod";
+import { commonParamsZodSchema, sendMessageRequestZodSchema } from "../../shared/zod/message.zod";
 import { SignedUrlRepositoryImpl } from "../../infrastructure/database/singedUrl/signedUrlCacheRepositoryImpl";
 
 const s3Client = new S3Client();
