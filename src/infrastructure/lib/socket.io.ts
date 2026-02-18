@@ -1,8 +1,7 @@
 import http from "http";
 import app from "../../app";
-import { redis } from "./redis";
-import { Types } from "mongoose";
 import { Server } from "socket.io";
+import { redisClient } from "./redis";
 
 const socketServer = http.createServer(app);
 
@@ -10,13 +9,13 @@ const chatIo = new Server(socketServer, { path: "/chat", cors: { origin: ["http:
 
 const videoIo = new Server(socketServer, { path: "/video", cors: { origin: "http://localhost:5173" } });
 
-export async function getReceiverSocketId(userId: Types.ObjectId): Promise<string | null> {
-    return await redis.get(`socket:${userId}`);
+export async function getReceiverSocketId(userId: string): Promise<string | null> {
+    return await redisClient.get(`socket:${userId}`);
 }
 
 async function getOnlineUsers(): Promise<string[]> {
-    const keys = await redis.keys("socket:*");
-    return keys.map((key) => key.split(":")[1]);
+    const keys = await redisClient.keys("socket:*");
+    return keys.map((key: string) => key.split(":")[1]);
 }
 
 
@@ -29,24 +28,24 @@ chatIo.on("connection", async (chatSocket) => {
         const userId = typeof queryUserId === "string" ? queryUserId : null;
 
         if (userId) {
-            await redis.set(`socket:${userId}`, chatSocket.id);
+            await redisClient.set(`socket:${userId}`, chatSocket.id);
         }
 
         chatIo.emit("getOnlineUsers", await getOnlineUsers());
 
         chatSocket.on("typing", async ({ fromUserId, toUserId }: { fromUserId: string; toUserId: string }) => {
-            const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
+            const toSocketId: string | null = await redisClient.get(`socket:${toUserId}`);
             if (toSocketId) chatIo.to(toSocketId).emit("typing", { fromUserId, toUserId });
         });
 
         chatSocket.on("stopTyping", async ({ fromUserId, toUserId }: { fromUserId: string; toUserId: string }) => {
-            const toSocketId: string | null = await redis.get(`socket:${toUserId}`);
+            const toSocketId: string | null = await redisClient.get(`socket:${toUserId}`);
             if (toSocketId) chatIo.to(toSocketId).emit("stopTyping", { fromUserId, toUserId });
         });
 
         chatSocket.on("disconnect", async () => {
             if (userId) {
-                await redis.del(`socket:${userId}`);
+                await redisClient.del(`socket:${userId}`);
             }
             chatIo.emit("getOnlineUsers", await getOnlineUsers());
         });

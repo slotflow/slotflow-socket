@@ -1,10 +1,14 @@
 import z from "zod";
-import { objectIdField, stringField } from "./common.zod";
+import { messageRegex, objectIdRegex } from "../utils/regex";
 
-export const commonParamsZodSchema = z.object({
-    toUserId: objectIdField("selected user id")
+export const getAllMessageSchema = z.object({
+    fromUserId: z.string().regex(objectIdRegex, "Invalid fromUserId"),
+    toUserId: z.string().regex(objectIdRegex, "Invalid toUserId"),
 });
 
-export const sendMessageRequestZodSchema = z.object({
-    text: stringField("Message text",1,500,/^[^\s]+(?:[\s\S]*[^\s]+)?$/,"Invalid message. It should not be empty or only spaces and must be between 1 and 500 characters."),
+export const sendMessageSchema = z.object({
+    senderId: z.string().regex(objectIdRegex, "Invalid senderId"),
+    receiverId: z.string().regex(objectIdRegex, "Invalid receiverId"),
+    file: z.custom<Express.Multer.File>().optional(),
+    text: z.string().regex(messageRegex, "Invalid message"),
 })

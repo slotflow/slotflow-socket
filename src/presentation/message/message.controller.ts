@@ -1,71 +1,52 @@
-import { Types } from "mongoose";
-import { Request, Response } from "express";
-import { awsConfig } from "../../config/env";
-import { S3Client } from "@aws-sdk/client-s3";
-import { HandleError } from "../../infrastructure/error/error";
-import { S3KeyGenerator } from "../../infrastructure/helper/generateS3Key";
-import { SendMessageUseCase } from "../../application/sendMessage.use-case";
-import { FileUploadService } from "../../infrastructure/services/s3/fileUpload";
-import { GetAllMessagesUseCase } from "../../application/getAllMessage.use-case";
-import { SignedUrlService } from "../../infrastructure/services/s3/singedUrl.service";
-import { RandomStringGenerator } from "../../infrastructure/helper/generateRandomString";
-import { MessageRepositoryImpl } from "../../infrastructure/database/message/message.repository.impl";
-import { commonParamsZodSchema, sendMessageRequestZodSchema } from "../../shared/zod/message.zod";
-import { SignedUrlRepositoryImpl } from "../../infrastructure/database/singedUrl/signedUrlCacheRepositoryImpl";
-
-const s3Client = new S3Client();
-const messageRepositoryIml = new MessageRepositoryImpl();
-const signedUrlCacheRepositoryImpl = new SignedUrlRepositoryImpl();
-const randomStringGenerator = new RandomStringGenerator();
-const s3KeyGenerator = new S3KeyGenerator(randomStringGenerator);
-const signedUrlService = new SignedUrlService(awsConfig.awsS3BucketName, signedUrlCacheRepositoryImpl);
-const fileUploadService = new FileUploadService(s3Client, signedUrlService, s3KeyGenerator);
-
-const sendMessageUseCase = new SendMessageUseCase(messageRepositoryIml, signedUrlService, fileUploadService);
-const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepositoryIml, signedUrlService);
+import { log } from "../../shared/logger/logger";
+import { NextFunction, Request, Response } from "express";
+import { getAllMessagesUseCase, sendMessageUseCase } from ".";
+import { DecodedUser } from "../../application/dtos/common.dtos";
+import { SendMessageUseCase } from "../../application/message/sendMessage.useCase";
+import { getAllMessageSchema, sendMessageSchema } from "../../shared/zod/message.zod";
+import { GetAllMessagesUseCase } from "../../application/message/getAllMessage.useCase";
 
 class MessageController {
     constructor(
-        private getAllMessagesUseCase: GetAllMessagesUseCase,
-        private sendMessageUseCase: SendMessageUseCase,
+        private readonly getAllMessagesUseCase: GetAllMessagesUseCase,
+        private readonly sendMessageUseCase: SendMessageUseCase,
     ) {
         this.getMessages = this.getMessages.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
     }
 
-    async getMessages(req: Request, res: Response) {
+    async getMessages(req: Request, res: Response, next: NextFunction) {
         try {
-            const validateParams = commonParamsZodSchema.parse(req.params);
-            const { toUserId } = validateParams;
-            const fromUserId = req.user.userOrProviderId;
-            const result = await this.getAllMessagesUseCase.execute({ fromUserId: new Types.ObjectId(fromUserId), toUserId: new Types.ObjectId(toUserId) });
+            const validatedData = getAllMessageSchema.parse({
+                fromUserId: (req.user as DecodedUser).userOrProviderId,
+                toUserId: req.params.toUserId
+            })
+            const result = await this.getAllMessagesUseCase.execute(validatedData);
             res.status(200).json(result);
         } catch (error) {
-            HandleError.handle(error, res);
+            log.error("getMessages failed : ",error as Error);
+            next(error);
         }
     }
 
-    async sendMessage(req: Request, res: Response) {
+    async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
-            const fromUserId = req.user.userOrProviderId;
-            const validateParams = commonParamsZodSchema.parse(req.params);
-            const { toUserId } = validateParams;
-            const validateData = sendMessageRequestZodSchema.parse(req.body);
-            const { text } = validateData;
-            const file = req.file;
-            const result = await this.sendMessageUseCase.execute({
-                senderId: new Types.ObjectId(fromUserId),
-                receiverId: new Types.ObjectId(toUserId),
-                file: file,
-                text: text
+            const validatedData = sendMessageSchema.parse({
+                senderId: (req.user as DecodedUser).userOrProviderId,
+                receiverId: req.params.toUserId,
+                file: req.file,
+                text: req.body.text
             });
+            const result = await this.sendMessageUseCase.execute(validatedData);
             res.status(200).json(result);
         } catch (error) {
-            console.log("error : ", error);
-            HandleError.handle(error, res);
+            log.error("sendMessage error : ",error as Error);
+            next(error);
         }
     }
 }
 
-const messageController = new MessageController(getAllMessagesUseCase, sendMessageUseCase);
-export { messageController };
+export const messageController = new MessageController(
+    getAllMessagesUseCase,
+    sendMessageUseCase
+);

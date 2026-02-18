@@ -11,27 +11,33 @@ export interface IMessage extends Document {
 };
 
 const messageSchema = new Schema<IMessage>({
-    senderId: { 
+    senderId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Sender Id is required"]
     },
-    receiverId: { 
+    receiverId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Receiver Id is required"]
     },
-    text: { 
+    text: {
         type: String,
         minlength: [1, "Text need atleast 1 character"],
         maxlength: [500, "Text maximum allowed length is 500"],
-        match: [/^[\p{L}\p{N}\p{P}\p{Zs}]+$/u, "Invalid characters in message"] 
+        match: [/^[\p{L}\p{N}\p{P}\p{Zs}]+$/u, "Invalid characters in message"]
     },
     image: {
         type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
-},{
-    timestamps: true
 });
 
-export const MessageModel = mongoose.model<IMessage>('Message',messageSchema)
+export const MessageModel = mongoose.model<IMessage>('Message', messageSchema)

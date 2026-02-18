@@ -4,6 +4,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import { log } from './shared/logger/logger';
 import messageRoutes from './presentation/message/message.routes';
+import { errorHandler } from './presentation/middleware/error.middleware';
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.get("/health", (req, res) => {
 });
 
 app.use('/api/message', messageRoutes);
+app.use(errorHandler);
 
 export default app;
