@@ -4,8 +4,8 @@ import { S3FileUploadServiceImpl } from "./s3fileUpload.impl";
 import { SignedUrlServiceImpl } from "./signedUrlService.impl";
 import { S3KeyGenerateServiceImpl } from "./s3KeyGenerateService.impl";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrlService";
-import { IS3keyGenerateService } from "../../domain/interfaces/services/IS3keyGenerateService";
 import { IS3FileUploadService } from "../../domain/interfaces/services/IS3FileUploadService";
+import { IS3keyGenerateService } from "../../domain/interfaces/services/IS3keyGenerateService";
 
 // signed url service instance
 export const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redisClient, s3Client);

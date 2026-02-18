@@ -1,7 +1,8 @@
 import { log } from "../../shared/logger/logger";
 import { SendMessageRequest } from "../dtos/common.dtos";
 import { Message } from "../../domain/entities/message.entity";
-import { getReceiverSocketId, chatIo } from "../../infrastructure/lib/socket.io";
+import { chatIo } from "../../infrastructure/socket/chat/chat.socket";
+import { getReceiverSocketId } from "../../infrastructure/socket/socket.server";
 import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrlService";
 import { IS3FileUploadService } from "../../domain/interfaces/services/IS3FileUploadService";
 import { IMessageRepository } from "../../domain/interfaces/repositories/IMessage.repository";

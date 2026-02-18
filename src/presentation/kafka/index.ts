@@ -1,5 +1,5 @@
-import { ProviderSubscriptionPaymentSuccessUseCase } from "../../application/provider/subscriptionPaymentSuccess.useCase";
+import { ProviderSubscriptionUpdatedUseCase } from "../../application/provider/subscriptionUpdated.useCase";
 
 export const handler = {
-    providerSubscriptionPaymentSuccess: new ProviderSubscriptionPaymentSuccessUseCase(),
+    providerSubscriptionUpdated: new ProviderSubscriptionUpdatedUseCase(),
 };

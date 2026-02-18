@@ -1,8 +1,12 @@
 import dotenv from 'dotenv';
 import { log } from './shared/logger/logger';
 import { initKafkaControllers } from './kafkaInitiator';
-import { socketServer } from './infrastructure/lib/socket.io';
 import connectDB from './config/database/mongodb/mongodb.config';
+import { socketServer } from './infrastructure/socket/socket.server';
+
+import "./infrastructure/socket/chat/chat.socket";
+import "./infrastructure/socket/video/video.socket";
+import "./infrastructure/socket/events/event.socket";
 
 dotenv.config();
 

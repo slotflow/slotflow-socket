@@ -5,10 +5,23 @@ dotenv.config();
 
 const validator = new Validator();
 
-export const mongoConfig = {
-    port: validator.requireNumber("MONGODB_PORT") || 5000,
-    mongoURL : validator.requireEnv("NODE_ENV") === "development" ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI") 
-}
+export const appConfig = {
+    port: validator.requireNumber("PORT"),
+    nodeEnv: validator.requireEnv("NODE_ENV"),
+};
+
+export const serviceConfig = {
+    frontendUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("FRONTEND_URL_DEV") : validator.requireEnv("FRONTEND_URL"),
+    apiGatewayUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("API_GATEWAY_URL_DEV") : validator.requireEnv("API_GATEWAY_URL"),
+    mainBackendServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("MAIN_BACKEND_SERVICE_URL_DEV") : validator.requireEnv("MAIN_BACKEND_SERVICE_URL"),
+    realtimeServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("REALTIME_SERVICE_URL_DEV") : validator.requireEnv("REALTIME_SERVICE_URL"),
+    notificationServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("NOTIFICATION_SERVICE_URL_DEV") : validator.requireEnv("NOTIFICATION_SERVICE_URL"),
+    paymentServiceUrl: appConfig.nodeEnv === "development" ? validator.requireEnv("PAYMENT_SERVICE_URL_DEV") : validator.requireEnv("PAYMENT_SERVICE_URL"),
+};
+
+export const mongodbConfig = {
+    mongoUri: appConfig.nodeEnv === "development" ? validator.requireEnv("MONGO_URI_DEV") : validator.requireEnv("MONGO_URI"),
+};
 
 export const redisConfig = {
     redisUrl: validator.requireEnv("REDIS_URL"),
@@ -19,7 +32,7 @@ export const redisConfig = {
 };
 
 export const jwtConfig = {
-    jwtSecret : validator.requireEnv("JWT_SECRET"),
+    jwtSecret: validator.requireEnv("JWT_SECRET"),
 }
 
 export const awsConfig = {
@@ -45,10 +58,11 @@ export const kafkaConfig = {
 
     topics: {
         sub: {
-            providerSubscriptionPaymentSuccess: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_PAYMENT_SUCCESS"),
+            providerSubscriptionUpdated: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_UPDATED"),
+
         },
         pub: {
-            
+
         },
     },
 };
