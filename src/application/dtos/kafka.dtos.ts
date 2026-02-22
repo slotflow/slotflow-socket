@@ -8,13 +8,24 @@ export interface KafkaClientAdapterProps {
     message: KafkaMessage;
 }
 
+// event envelope
+export interface EventEnvelope<T> {
+    eventId: string;
+    occurredAt: string;
+    attempt: number;
+    maxAttempts: number;
+    payload: T;
+}
+
 // kafka client adapter message handler
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
 
 export interface ProviderSubscriptionUpdatedEvent {
-    providerId: string;
-    subscriptionPlan: PlanName;
-    startDate: Date;
-    endDate: Date;
+    ssData: {
+        providerId: string;
+        subscriptionPlan: PlanName;
+        startDate: Date;
+        endDate: Date;
+  }
 }

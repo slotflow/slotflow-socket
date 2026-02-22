@@ -6,16 +6,16 @@ import { log } from './shared/logger/logger';
 import messageRoutes from './presentation/message/message.routes';
 import { errorHandler } from './presentation/middleware/error.middleware';
 
-import { serverConfig } from './config/env';
+// import { serviceConfig } from './config/env';
 
 const app = express();
 
-app.use(cors({
-  origin: serverConfig.origin,
-  credentials: true,
-  allowedHeaders: ['Content-type', 'Authorization', 'Accept', 'X-Requested-with'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-}));
+// app.use(cors({
+//   origin: serviceConfig.origin,
+//   credentials: true,
+//   allowedHeaders: ['Content-type', 'Authorization', 'Accept', 'X-Requested-with'],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+// }));
 
 app.use(helmet());
 app.use(express.json({ limit: "10mb" }));

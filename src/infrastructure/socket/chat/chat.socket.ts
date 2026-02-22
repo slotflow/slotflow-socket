@@ -1,13 +1,9 @@
-import { Server } from "socket.io";
-import { socketServer } from "../socket.server";
+import { io } from "../socket.server";
+import { ChatSocketEnum } from "../enums/enums";
 import { registerChatHandlers } from "./chat.handlers";
-import { serviceConfig } from "../../../config/env";
 
-export const chatIo = new Server(socketServer, {
-  path: "/chat",      
-  cors: { origin: [serviceConfig.frontendUrl] },
-});
+export const chatIo = io.of("/chat");
 
-chatIo.on("connection", (socket) => {
+chatIo.on(ChatSocketEnum.connection, (socket) => {
   registerChatHandlers(socket, chatIo);
 });

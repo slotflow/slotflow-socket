@@ -2,6 +2,7 @@ export enum ChatSocketEnum {
     getOnlineUsers = "getOnlineUsers",
     typing = "typing",
     stopTyping = "stopTyping",
+    connection = "connection",
     disconnect = "disconnect"
 }
 
@@ -17,4 +18,10 @@ export enum VideoSocketEnum {
     userLeft = "user:left",
     roomLeave = "room:leave",
     disconnect = "disconnect"
+}
+
+export enum EventSocketEnum {
+    connection = "connection",
+    disconnect = "disconnect",
+    subscriptionActivated = "subscription:activated"
 }

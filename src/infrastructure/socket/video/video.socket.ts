@@ -1,12 +1,7 @@
-import { Server } from "socket.io";
-import { socketServer } from "../socket.server";
-import { serviceConfig } from "../../../config/env";
+import { io } from "../socket.server";
 import { registerVideoHandlers } from "./video.handler";
 
-export const videoIo = new Server(socketServer, {
-  path: "/video",
-  cors: { origin: serviceConfig.frontendUrl },
-});
+export const videoIo = io.of("/video");
 
 videoIo.on("connection", (socket) => {
   registerVideoHandlers(socket, videoIo);

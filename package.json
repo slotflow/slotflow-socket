@@ -8,7 +8,7 @@
   "packageManager": "pnpm@10.28.1",
   "type": "module",
   "scripts": {
-    "predev": "npx kill-port 4000",
+    "predev": "npx kill-port 5000",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",

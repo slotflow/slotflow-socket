@@ -20,6 +20,7 @@ export class KafkaController {
                 await this.kafkaConsumer.subscribe(topic, async ({ message }) => {
                     if (!message.value) return;
                     const eventData = JSON.parse(message.value.toString());
+                    console.log("eventData : ",eventData);
                     await useCase.execute(eventData);
                 });
             };

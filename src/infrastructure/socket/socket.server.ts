@@ -1,9 +1,14 @@
 import http from "http";
 import app from "../../app";
-import { redisClient } from "../lib/redis";
+import { Server } from "socket.io";
+import { serviceConfig } from "../../config/env";
 
 export const socketServer = http.createServer(app);
 
-export async function getReceiverSocketId(userId: string): Promise<string | null> {
-    return await redisClient.get(`chatSocket:${userId}`);
-}
+export const io = new Server(socketServer, {
+    path: "/socket.io",
+    cors: {
+        origin: [serviceConfig.frontendUrl],
+        credentials: true,
+    },
+});

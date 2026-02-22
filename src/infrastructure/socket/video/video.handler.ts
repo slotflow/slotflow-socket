@@ -1,8 +1,8 @@
-import { Server, Socket } from "socket.io";
+import { Namespace, Socket } from "socket.io";
 import { VideoSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 
-export const registerVideoHandlers = (socket: Socket, videoIo: Server) => {
+export const registerVideoHandlers = (socket: Socket, videoIo: Namespace) => {
   log.info(`Video socket connected: ${socket.id}`);
 
   socket.on(VideoSocketEnum.roomJoin, ({ roomId, user }) => {
