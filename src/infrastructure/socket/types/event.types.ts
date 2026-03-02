@@ -12,3 +12,13 @@ export interface AccessTokenPayload extends JwtPayload {
   userOrProviderId: string;
   role: Role;
 };
+
+export interface SlotEngageRequest {
+  providerId: string;
+  date: string;
+  slotId: string;
+}
+
+export interface ProviderJoin {
+  providerId: string;
+}

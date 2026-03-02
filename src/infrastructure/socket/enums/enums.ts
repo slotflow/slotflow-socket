@@ -23,5 +23,13 @@ export enum VideoSocketEnum {
 export enum EventSocketEnum {
     connection = "connection",
     disconnect = "disconnect",
-    subscriptionActivated = "subscription:activated"
+    subscriptionActivated = "subscription:activated",
+    providerJoin = "provider:join",
+    slotEngageRequest = "slot:engage:request",
+    slotEngageRejected = "slot:engage:rejected",
+    slotEngageApproved = "slot:engage:approved",
+    providerLeave = "provider:leave",
+    slotLocked = "slot:locked",
+    slotUnlockRequest = "slot:unlock:request",
+    slotUnlocked = "slot:unlocked"
 }
