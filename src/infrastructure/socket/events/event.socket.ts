@@ -5,6 +5,7 @@ import { jwtConfig } from "../../../config/env";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { registerEventHandlers } from "./event.handlers";
+import { logRedisData } from '../../../shared/utils/logRedisData';
 import { extractTokenFromCookie } from "../../../shared/utils/extractTokenFromCookie";
 
 export const eventIo = io.of("/events");
@@ -44,16 +45,11 @@ eventIo.use(async (socket, next) => {
     socket.data.tokenExp = decoded.exp; // store expiry if needed
 
     // Store socket ID
-    await redisClient.sadd(`eventSocket:${userId}`, socket.id);
+    await redisClient.sadd(`socket:eventSocket:${userId}`, socket.id);
 
     // consoling redisClient eventSocket userIds
     const keys = await redisClient.keys("eventSocket:*");
-
-    for (const key of keys) {
-      const userId = key.split(":")[1];
-      const socketIds = await redisClient.smembers(key);
-      console.log("User:", userId, "Sockets:", socketIds);
-    }
+    await logRedisData(keys);
 
     // Join user room
     socket.join(userId);

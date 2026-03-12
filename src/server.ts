@@ -1,18 +1,22 @@
 import dotenv from 'dotenv';
-import './infrastructure/socket/index';
-import { log } from './shared/logger/logger';
-import { initKafkaControllers } from './kafkaInitiator';
-import connectDB from './config/database/mongodb/mongodb.config';
-import { socketServer, io } from './infrastructure/socket/socket.server';
-
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+import './infrastructure/socket/index';
+import { appConfig } from './config/env';
+import { initKafka } from './kafkaControl';
+import { log } from './shared/logger/logger';
+import { gracefulShutdown } from './shared/utils/shutDown';
+import { clearRedisSocketData } from './shared/utils/eventCleaner';
+import { connectDB } from './config/database/mongodb/mongodb.config';
+import { socketServer, io } from './infrastructure/socket/socket.server';
+
+const PORT = appConfig.port;
 
 const start = async () => {
     try {
         await connectDB();
-        await initKafkaControllers();
+        await initKafka();
+        await clearRedisSocketData();
 
         // The io instance is already attached to socketServer in socket.server.ts
         socketServer.listen(PORT, () => {
@@ -25,5 +29,8 @@ const start = async () => {
     }
 
 };
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 start();

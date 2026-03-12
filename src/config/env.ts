@@ -6,7 +6,7 @@ dotenv.config();
 const validator = new Validator();
 
 export const appConfig = {
-    port: validator.requireNumber("PORT"),
+    port: validator.requireNumber("PORT") || 5000,
     nodeEnv: validator.requireEnv("NODE_ENV"),
 };
 
@@ -57,7 +57,8 @@ export const kafkaConfig = {
 
     topics: {
         sub: {
-            providerSubscriptionUpdated: validator.requireEnv("KAFKA_PROVIDER_SUBSCRIPTION_UPDATED"),
+            planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
+            slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED")
 
         },
         pub: {

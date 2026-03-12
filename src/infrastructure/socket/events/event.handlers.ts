@@ -3,6 +3,7 @@ import { eventIo } from "./event.socket";
 import { redisClient } from "../../lib/redis";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
+import { logRedisData } from "../../../shared/utils/logRedisData";
 import { ProviderJoin, ProviderSubscriptionUpdatedPayload, SlotEngageRequest } from "../types/event.types";
 
 export const registerEventHandlers = async (socket: Socket) => {
@@ -21,14 +22,17 @@ export const registerEventHandlers = async (socket: Socket) => {
 
     const key = `slot:${providerId}:${date}:${slotId}`;
 
-    const existing = await redisClient.get(`engaged:slots:${key}`);
+    // const existing = await redisClient.get(`engaged:slots:${key}`);
+    const result = await redisClient.set(`socket:engaged:slots:${key}`, userId, { ex: 600, nx: true });
 
-    if (existing) {
+    if (!result) {
       socket.emit(EventSocketEnum.slotEngageRejected);
       return;
     }
 
-    await redisClient.set(`engaged:slots:${key}`, userId, { ex: 600 });
+
+    const keys = await redisClient.keys(`socket:engaged:slots:${key}`);
+    await logRedisData(keys)
 
     eventIo.to(`provider:${providerId}`).emit(EventSocketEnum.slotLocked, {
       providerId,
@@ -50,7 +54,7 @@ export const registerEventHandlers = async (socket: Socket) => {
 
     const key = `slot:${providerId}:${date}:${slotId}`;
 
-    await redisClient.del(`engaged:slots:${key}`);
+    await redisClient.del(`socket:engaged:slots:${key}`);
 
     eventIo.to(`provider:${providerId}`).emit(EventSocketEnum.slotUnlocked, {
       providerId,
@@ -62,17 +66,17 @@ export const registerEventHandlers = async (socket: Socket) => {
 
   // handle disconnect
   socket.on(EventSocketEnum.disconnect, async () => {
-    log.info("Event socket disconnected");
     if (userId) {
-      await redisClient.srem(`eventSocket:${userId}`, socket.id);
+      
+      const keys = await redisClient.keys(`socket:eventSocket:${userId}`);
+      await logRedisData(keys);
+      
+      await redisClient.srem(`socket:eventSocket:${userId}`, socket.id);
+      log.info("Removed socketId of the user")
 
-      const keys = await redisClient.keys("eventSocket:*");
+      await logRedisData(keys);
 
-      for (const key of keys) {
-        const userId = key.split(":")[1];
-        const socketIds = await redisClient.smembers(key);
-        console.log("User:", userId, "Sockets:", socketIds);
-      }
+      log.info("Event socket disconnected");
     }
   });
 }

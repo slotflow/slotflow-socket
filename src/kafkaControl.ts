@@ -3,8 +3,13 @@ import { kafkaConsumer, kafkaProducer } from "./infrastructure/messaging";
 
 export const kafkaController = new KafkaController(kafkaConsumer);
 
-export const initKafkaControllers = async () => {
+export const initKafka = async () => {
     await kafkaConsumer.connectConsumer();
     await kafkaProducer.connectProducer();
     await kafkaController.startListening();
 };
+
+export const stopKafka = async () => {
+    await kafkaConsumer.disconnectConsumer();
+    await kafkaProducer.disconnectProducer()
+}

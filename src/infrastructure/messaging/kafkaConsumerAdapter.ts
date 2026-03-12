@@ -36,4 +36,7 @@ export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
         log.info("Kafka consumer running");
     }
 
+    async disconnectConsumer(): Promise<void> {
+        await this.consumer.disconnect()
+    }
 };
