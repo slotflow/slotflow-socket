@@ -11,9 +11,9 @@ export const registerVideoHandlers = (socket: Socket, videoIo: Namespace) => {
     socket.to(roomId).emit(VideoSocketEnum.userJoined, { id: socket.id, user });
   });
 
-  socket.on(VideoSocketEnum.userCall, ({ to, offer }) => {
+  socket.on(VideoSocketEnum.userCall, ({ to, offer, user }) => {
     log.info(`user call to : ${to}, offer: ${offer}`);
-    videoIo.to(to).emit(VideoSocketEnum.incomingCall, { from: socket.id, offer });
+    videoIo.to(to).emit(VideoSocketEnum.incomingCall, { from: socket.id, offer, user });
   });
 
   socket.on(VideoSocketEnum.callAccepted, ({ to, ans }) => {
