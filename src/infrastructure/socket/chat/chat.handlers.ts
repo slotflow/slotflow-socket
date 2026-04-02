@@ -1,4 +1,4 @@
-import { redisClient } from "../../lib/redis";
+import { redisClient } from "../../cache/redis/redis.client";
 import { ChatSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { Namespace, Server, Socket } from "socket.io";
@@ -37,5 +37,5 @@ async function getOnlineUsers() {
 }
 
 export async function getReceiverSocketId(userId: string): Promise<string | null> {
-    return await redisClient.get(`chatSocket:${userId}`);
+  return await redisClient.get(`chatSocket:${userId}`);
 }

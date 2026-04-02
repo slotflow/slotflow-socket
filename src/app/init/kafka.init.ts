@@ -1,7 +1,6 @@
-import { KafkaController } from "./presentation/kafka/kafka.controller";
-import { kafkaConsumer, kafkaProducer } from "./infrastructure/messaging";
+import { kafkaController } from "../../presentation/kafka/kafka.controller";
+import { kafkaConsumer, kafkaProducer } from "../../infrastructure/messaging";
 
-export const kafkaController = new KafkaController(kafkaConsumer);
 
 export const initKafka = async () => {
     await kafkaConsumer.connectConsumer();

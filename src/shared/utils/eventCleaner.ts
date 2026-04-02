@@ -1,9 +1,9 @@
 import { log } from "../logger/logger";
-import { redisClient } from "../../infrastructure/lib/redis";
+import { redisClient } from "../../infrastructure/cache/redis/redis.client";
 
 export const clearRedisSocketData = async () => {
     try {
-       let cursor = 0;
+        let cursor = 0;
         let totalDeleted = 0;
 
         do {

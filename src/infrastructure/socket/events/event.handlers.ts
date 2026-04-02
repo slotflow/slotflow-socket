@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { eventIo } from "./event.socket";
-import { redisClient } from "../../lib/redis";
+import { redisClient } from "../../cache/redis/redis.client";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { logRedisData } from "../../../shared/utils/logRedisData";
@@ -67,10 +67,10 @@ export const registerEventHandlers = async (socket: Socket) => {
   // handle disconnect
   socket.on(EventSocketEnum.disconnect, async () => {
     if (userId) {
-      
+
       const keys = await redisClient.keys(`socket:eventSocket:${userId}`);
       await logRedisData(keys);
-      
+
       await redisClient.srem(`socket:eventSocket:${userId}`, socket.id);
       log.info("Removed socketId of the user")
 

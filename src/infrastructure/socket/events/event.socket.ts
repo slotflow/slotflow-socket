@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { io } from '../socket.server';
-import { redisClient } from "../../lib/redis";
+import { redisClient } from "../../cache/redis/redis.client";
 import { jwtConfig } from "../../../config/env";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";

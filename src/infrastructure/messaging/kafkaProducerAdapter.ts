@@ -24,6 +24,7 @@ export class KafkaProducerAdapter implements IKafkaProducerAdapter {
 
     async disconnectProducer(): Promise<void> {
         await this.producer.disconnect();
+        log.info("Kafka producer disconnected");
     }
 
 };

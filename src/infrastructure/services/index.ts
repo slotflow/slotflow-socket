@@ -1,5 +1,5 @@
-import { s3Client } from "../lib/aws_s3";
-import { redisClient } from "../lib/redis";
+import { s3Client } from "../cloud/aws/aws.s3.client";
+import { redisClient } from "../cache/redis/redis.client";
 import { S3FileUploadServiceImpl } from "./s3fileUpload.impl";
 import { SignedUrlServiceImpl } from "./signedUrlService.impl";
 import { S3KeyGenerateServiceImpl } from "./s3KeyGenerateService.impl";

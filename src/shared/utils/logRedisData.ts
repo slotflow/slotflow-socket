@@ -1,5 +1,5 @@
 import { log } from "../logger/logger"
-import { redisClient } from "../../infrastructure/lib/redis";
+import { redisClient } from "../../infrastructure/cache/redis/redis.client";
 
 export const logRedisData = async (keys: string[]) => {
     try {
