@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
 
 import './infrastructure/socket/index';
 import { appConfig } from './config/env';
