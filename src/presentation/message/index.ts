@@ -1,7 +1,7 @@
 import { messageRepository } from "../../infrastructure/repositoryImpl";
-import { SendMessageUseCase } from "../../application/message/sendMessage.useCase";
+import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { s3FileUploadService, signedUrlService } from "../../infrastructure/services";
-import { GetAllMessagesUseCase } from "../../application/message/getAllMessage.useCase";
+import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllMessage.useCase";
 
 export const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepository, signedUrlService);
 

@@ -1,11 +1,12 @@
-import { log } from "../../shared/logger/logger";
-import { SendMessageRequest } from "../dtos/common.dtos";
-import { Message } from "../../domain/entities/message.entity";
-import { chatIo } from "../../infrastructure/socket/chat/chat.socket";
-import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrlService";
-import { IS3FileUploadService } from "../../domain/interfaces/services/IS3FileUploadService";
-import { IMessageRepository } from "../../domain/interfaces/repositories/IMessage.repository";
-import { getReceiverSocketId } from "../../infrastructure/socket/chat/chat.handlers";
+import { SendMessageRequest } from "../../dtos/common.dtos";
+import { BadRequestError } from "../../../shared/error/appError";
+import { Message } from "../../../domain/entities/message.entity";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { chatIo } from "../../../infrastructure/socket/chat/chat.socket";
+import { getReceiverSocketId } from "../../../infrastructure/socket/chat/chat.handlers";
+import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrlService";
+import { IS3FileUploadService } from "../../../domain/interfaces/services/IS3FileUploadService";
+import { IMessageRepository } from "../../../domain/interfaces/repositories/IMessage.repository";
 
 export class SendMessageUseCase {
     constructor(
@@ -17,6 +18,9 @@ export class SendMessageUseCase {
     async execute(payload: SendMessageRequest): Promise<Message> {
         try {
             const { senderId, receiverId, text, file } = payload;
+            if (!senderId || !receiverId || (!text && !file)) {
+                throw new BadRequestError("Sender, Receiver, and content (text or file) are required");
+            }
 
             let imageKey: string | undefined;
             if (file) {
@@ -38,7 +42,7 @@ export class SendMessageUseCase {
 
             if (imageKey) {
                 newMessage.update({ image: await this.signedUrlService.save(imageKey) });
-            }
+                }
 
             const receiverSocketId = await getReceiverSocketId(receiverId);
             if (receiverSocketId) {
@@ -46,10 +50,8 @@ export class SendMessageUseCase {
             }
 
             return newMessage
-        } catch (error) {
-            log.error(`SendMessageUseCase failed : ${error}`);
-            throw error;
+        } catch (error: unknown) {
+            throw toAppError(error, "Failed to send message");
         }
-
     }
 }

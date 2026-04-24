@@ -2,9 +2,9 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { getAllMessagesUseCase, sendMessageUseCase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dtos";
-import { SendMessageUseCase } from "../../application/message/sendMessage.useCase";
+import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { getAllMessageSchema, sendMessageSchema } from "../../shared/zod/message.zod";
-import { GetAllMessagesUseCase } from "../../application/message/getAllMessage.useCase";
+import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllMessage.useCase";
 
 class MessageController {
     constructor(
@@ -17,30 +17,36 @@ class MessageController {
 
     async getMessages(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
             const validatedData = getAllMessageSchema.parse({
-                fromUserId: (req.user as DecodedUser).userOrProviderId,
                 toUserId: req.params.toUserId
             })
-            const result = await this.getAllMessagesUseCase.execute(validatedData);
+            const result = await this.getAllMessagesUseCase.execute({
+                ...validatedData,
+                fromUserId: user.userOrProviderId
+            });
             res.status(200).json(result);
         } catch (error) {
-            log.error("getMessages failed : ",error as Error);
+            log.error("getMessages failed : ", error as Error);
             next(error);
         }
     }
 
     async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
+            const user = req.user as DecodedUser;
             const validatedData = sendMessageSchema.parse({
-                senderId: (req.user as DecodedUser).userOrProviderId,
                 receiverId: req.params.toUserId,
                 file: req.file,
                 text: req.body.text
             });
-            const result = await this.sendMessageUseCase.execute(validatedData);
+            const result = await this.sendMessageUseCase.execute({
+                ...validatedData,
+                senderId: user.userOrProviderId
+            });
             res.status(200).json(result);
         } catch (error) {
-            log.error("sendMessage error : ",error as Error);
+            log.error("sendMessage error : ", error as Error);
             next(error);
         }
     }

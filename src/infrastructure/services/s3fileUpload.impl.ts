@@ -1,7 +1,8 @@
 import { awsConfig } from "../../config/env";
 import { Upload } from "@aws-sdk/lib-storage";
 import { S3Client } from "@aws-sdk/client-s3";
-import { log } from "../../shared/logger/logger";
+import { ERROR_CODES } from "../../shared/utils/types";
+import { AppError, BadRequestError } from "../../shared/error/appError";
 import { IS3keyGenerateService } from "../../domain/interfaces/services/IS3keyGenerateService";
 import { IS3FileUploadService, UploadFileOptions } from "../../domain/interfaces/services/IS3FileUploadService";
 
@@ -13,9 +14,11 @@ export class S3FileUploadServiceImpl implements IS3FileUploadService {
   ) { };
 
   async uploadFile(payload: UploadFileOptions): Promise<string> {
-
-    const { folder, userId, file } = payload;
     try {
+      const { folder, userId, file } = payload;
+      if (!folder || !userId || !file) {
+        throw new BadRequestError();
+      }
 
       const s3Key = this.s3KeyGenerateService.generateS3Key({
         folder,
@@ -39,9 +42,13 @@ export class S3FileUploadServiceImpl implements IS3FileUploadService {
 
       return s3Key;
 
-    } catch (error) {
-      log.error(`FileUploadService uploadFile ${error}`);
-      throw error;
+    } catch (error: unknown) {
+      throw new AppError(
+        "Failed to upload file",
+        500,
+        false,
+        ERROR_CODES.INTERNAL_ERROR
+      );
     }
   }
 }

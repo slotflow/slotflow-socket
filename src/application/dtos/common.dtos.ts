@@ -11,8 +11,8 @@ export interface MessageDTO {
 }
 
 export interface DecodedUser {
-  userOrProviderId?: string;
-  role?: Role;
+  userOrProviderId: string;
+  role: Role;
   googleAccessToken?: string;
   googleRefreshToken?: string;
   googleId?: string;

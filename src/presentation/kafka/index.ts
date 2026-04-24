@@ -1,4 +1,4 @@
-import { ProviderSubscriptionUpdatedUseCase } from "../../application/provider/subscriptionUpdated.useCase";
+import { ProviderSubscriptionUpdatedUseCase } from "../../application/usecase/system/subscriptionUpdated.useCase";
 
 export const handler = {
     planSubscribed: new ProviderSubscriptionUpdatedUseCase(),

@@ -1,6 +1,6 @@
-import { log } from "../../shared/logger/logger";
-import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../dtos/kafka.dtos";
-import { emitSubscriptionActivated } from "../../infrastructure/socket/events/event.handlers";
+import { log } from "../../../shared/logger/logger";
+import { EventEnvelope, ProviderSubscriptionUpdatedEvent } from "../../dtos/kafka.dtos";
+import { emitSubscriptionActivated } from "../../../infrastructure/socket/events/event.handlers";
 
 export class ProviderSubscriptionUpdatedUseCase {
     constructor(
@@ -8,13 +8,13 @@ export class ProviderSubscriptionUpdatedUseCase {
     ) { };
 
     async execute(payload: EventEnvelope<ProviderSubscriptionUpdatedEvent>): Promise<void> {
-        const { 
+        const {
             payload: { ssData: { providerId } }
-         } = payload;
+        } = payload;
         try {
             emitSubscriptionActivated(providerId, payload.payload.ssData);
         } catch (error) {
-            log.error("ProviderSubscriptionUpdatedUseCase failed : ",error as Error);
+            log.error("ProviderSubscriptionUpdatedUseCase failed : ", error as Error);
             throw error;
         }
     }
