@@ -1,5 +1,5 @@
 export interface JwtClaims {
-  userOrProviderId?: string;
+  id?: string;
   email?: string;
   role?: string;
   iat?: number;

@@ -2,8 +2,8 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { getAllMessagesUseCase, sendMessageUseCase } from ".";
 import { DecodedUser } from "../../application/dtos/common.dtos";
-import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { getAllMessageSchema, sendMessageSchema } from "../../shared/zod/message.zod";
+import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllMessage.useCase";
 
 class MessageController {
@@ -23,7 +23,7 @@ class MessageController {
             })
             const result = await this.getAllMessagesUseCase.execute({
                 ...validatedData,
-                fromUserId: user.userOrProviderId
+                fromUserId: user.id
             });
             res.status(200).json(result);
         } catch (error) {
@@ -42,7 +42,7 @@ class MessageController {
             });
             const result = await this.sendMessageUseCase.execute({
                 ...validatedData,
-                senderId: user.userOrProviderId
+                senderId: user.id
             });
             res.status(200).json(result);
         } catch (error) {

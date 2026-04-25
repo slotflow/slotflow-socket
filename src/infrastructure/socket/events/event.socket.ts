@@ -35,7 +35,7 @@ eventIo.use(async (socket, next) => {
       return next(new Error("Unauthorized"));
     }
 
-    const userId = decoded.userOrProviderId;
+    const userId = decoded.id;
 
     if (!userId) {
       return next(new Error("Unauthorized - invalid payload"));

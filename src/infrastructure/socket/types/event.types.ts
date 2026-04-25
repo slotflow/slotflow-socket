@@ -9,7 +9,7 @@ export interface ProviderSubscriptionUpdatedPayload {
 }
 
 export interface AccessTokenPayload extends JwtPayload {
-  userOrProviderId: string;
+  id: string;
   role: Role;
 };
 
