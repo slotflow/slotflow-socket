@@ -1,4 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
+import { IdType } from '../../shared/utils/types';
+import { generateId } from '../../shared/utils/generateId';
 import { BadRequestError } from '../../shared/error/appError';
 import { toAppError } from '../../shared/error/handleUnknownError';
 import { GenerateS3KeyPayload, IS3keyGenerateService } from "../../domain/interfaces/services/IS3keyGenerateService";
@@ -14,7 +15,7 @@ export class S3KeyGenerateServiceImpl implements IS3keyGenerateService {
                 throw new BadRequestError();
             }
 
-            return `${folder}/${userId}/${uuidv4()}-${originalname}`;
+            return `${folder}/${userId}/${generateId(IdType.FILE)}-${originalname}`;
         } catch (error: unknown) {
             throw toAppError(error, "Error generating S3 Key");
         }
