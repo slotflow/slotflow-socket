@@ -8,21 +8,46 @@ export interface KafkaClientAdapterProps {
     message: KafkaMessage;
 }
 
+// backend-main service subscribing kafka event payload
+export interface SSSubKafkaEventPayload {
+    socketData: any;
+}
+
+// dlq metadata
+export interface DqMetaData {
+    service: string;
+    originalTopic: string;
+    error: string;
+    failedAt: Date;
+    retryCount?: number;
+}
+
 // event envelope
-export interface EventEnvelope<T> {
+export interface EventEnvelope<SSSubKafkaEventPayload, M = DqMetaData> {
     eventId: string;
     occurredAt: string;
     attempt: number;
     maxAttempts: number;
-    payload: T;
+    payload: SSSubKafkaEventPayload;
+    metadata?: M;
 }
 
 // kafka client adapter message handler
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
+// process event wrapper input
+export interface ProcessEventWrapperInput {
+  topic: string;
+  eventData: EventEnvelope<SSSubKafkaEventPayload>;
+  businessUseCase: { execute: (data: any) => Promise<void> };
+  payloadExtractor: (payload: SSSubKafkaEventPayload) => any;
+}
 
+// **** publish events
+
+// provider subscription updated event
 export interface ProviderSubscriptionUpdatedEvent {
-    ssData: {
+    socketData: {
         providerId: string;
         subscriptionPlan: PlanName;
         startDate: Date;

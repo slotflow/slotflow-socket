@@ -61,11 +61,12 @@ export const kafkaConfig = {
     ],
 
     topics: {
+        dlqTopic: validator.requireEnv("KAFKA_DLQ_TOPIC"),
+
         sub: {
             planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
-            slotBooked: validator.requireEnv("KAFKA_SLOT_BOOKED")
-
         },
+        
         pub: {
 
         },

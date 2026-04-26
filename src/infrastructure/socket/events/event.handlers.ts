@@ -83,6 +83,6 @@ export const registerEventHandlers = async (socket: Socket) => {
 
 
 // emit subscription activated
-export function emitSubscriptionActivated(userId: string, payload: ProviderSubscriptionUpdatedPayload) {
-  eventIo.to(userId).emit(EventSocketEnum.subscriptionActivated, payload);
+export function emitSubscriptionActivated(payload: ProviderSubscriptionUpdatedPayload) {
+  eventIo.to(payload.providerId).emit(EventSocketEnum.subscriptionActivated, payload);
 };
