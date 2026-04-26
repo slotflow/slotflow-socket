@@ -1,7 +1,6 @@
-import { ERROR_CODES } from "../../../shared/utils/types";
 import { toAppError } from "../../../shared/error/handleUnknownError";
-import { AppError, BadRequestError } from "../../../shared/error/appError";
-import { GetAllMessageRequest, GetAllMessagesResponse } from "../../dtos/common.dtos";
+import { BadRequestError } from "../../../shared/error/appError";
+import { GetAllMessageInput, GetAllMessagesOutput } from "../../dtos/common.dtos";
 import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrlService";
 import { IMessageRepository } from "../../../domain/interfaces/repositories/IMessage.repository";
 
@@ -11,9 +10,9 @@ export class GetAllMessagesUseCase {
         private readonly signedUrlService: ISignedUrlService
     ) { }
 
-    async execute(payload: GetAllMessageRequest): Promise<GetAllMessagesResponse> {
+    async execute(input: GetAllMessageInput): Promise<GetAllMessagesOutput> {
         try {
-            const { fromUserId, toUserId } = payload;
+            const { fromUserId, toUserId } = input;
             if (!fromUserId || !toUserId) {
                 throw new BadRequestError();
             }

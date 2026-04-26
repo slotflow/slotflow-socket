@@ -1,4 +1,4 @@
-import { SendMessageRequest } from "../../dtos/common.dtos";
+import { SendMessageInput } from "../../dtos/common.dtos";
 import { BadRequestError } from "../../../shared/error/appError";
 import { Message } from "../../../domain/entities/message.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
@@ -15,9 +15,9 @@ export class SendMessageUseCase {
         private readonly signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(payload: SendMessageRequest): Promise<Message> {
+    async execute(input: SendMessageInput): Promise<Message> {
         try {
-            const { senderId, receiverId, text, file } = payload;
+            const { senderId, receiverId, text, file } = input;
             if (!senderId || !receiverId || (!text && !file)) {
                 throw new BadRequestError("Sender, Receiver, and content (text or file) are required");
             }
@@ -42,7 +42,7 @@ export class SendMessageUseCase {
 
             if (imageKey) {
                 newMessage.update({ image: await this.signedUrlService.save(imageKey) });
-                }
+            }
 
             const receiverSocketId = await getReceiverSocketId(receiverId);
             if (receiverSocketId) {

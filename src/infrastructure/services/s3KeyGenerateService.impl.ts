@@ -8,9 +8,9 @@ export class S3KeyGenerateServiceImpl implements IS3keyGenerateService {
 
     constructor() { };
 
-    generateS3Key(payload: GenerateS3KeyPayload): string {
+    generateS3Key(input: GenerateS3KeyPayload): string {
         try {
-            const { folder, userId, originalname } = payload;
+            const { folder, userId, originalname } = input;
             if (!folder || !userId || !originalname) {
                 throw new BadRequestError();
             }

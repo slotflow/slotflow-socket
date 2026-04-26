@@ -11,30 +11,30 @@ export interface MessageDTO {
 }
 
 export interface DecodedUser {
-  id: string;
-  role: Role;
-  googleAccessToken?: string;
-  googleRefreshToken?: string;
-  googleId?: string;
-  email?: string;
-  name?: string;
-  image: string | null;
-  connectOnly?: boolean;
-  exp?: number;
-  iat?: number;
-  userId?: string;
+    id: string;
+    role: Role;
+    googleAccessToken?: string;
+    googleRefreshToken?: string;
+    googleId?: string;
+    email?: string;
+    name?: string;
+    image: string | null;
+    connectOnly?: boolean;
+    exp?: number;
+    iat?: number;
+    userId?: string;
 };
 
-export interface SendMessageRequest {
+export interface SendMessageInput {
     senderId: string;
     receiverId: string;
     text: string;
     file?: Express.Multer.File;
 }
 
-export interface GetAllMessageRequest {
+export interface GetAllMessageInput {
     fromUserId: string;
     toUserId: string;
 }
 
-export type GetAllMessagesResponse = Array<MessageDTO>;
+export type GetAllMessagesOutput = Array<MessageDTO>;

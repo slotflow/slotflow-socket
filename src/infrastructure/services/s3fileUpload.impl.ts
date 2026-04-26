@@ -13,9 +13,9 @@ export class S3FileUploadServiceImpl implements IS3FileUploadService {
     private readonly s3KeyGenerateService: IS3keyGenerateService
   ) { };
 
-  async uploadFile(payload: UploadFileOptions): Promise<string> {
+  async uploadFile(input: UploadFileOptions): Promise<string> {
     try {
-      const { folder, userId, file } = payload;
+      const { folder, userId, file } = input;
       if (!folder || !userId || !file) {
         throw new BadRequestError();
       }

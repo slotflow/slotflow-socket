@@ -1,6 +1,8 @@
 import { KafkaMessage } from "kafkajs";
 import { PlanName } from "../../domain/enums/common.enums";
 
+//// **** KAFKA COMMON DTOS
+
 // kafka client adapter props
 export interface KafkaClientAdapterProps {
     topic: string;
@@ -43,10 +45,12 @@ export interface ProcessEventWrapperInput {
   payloadExtractor: (payload: SSSubKafkaEventPayload) => any;
 }
 
-// **** publish events
+
+
+// **** subscribing events
 
 // provider subscription updated event
-export interface ProviderSubscriptionUpdatedEvent {
+export interface ProviderSubscriptionUpdatedEventInput {
     socketData: {
         providerId: string;
         subscriptionPlan: PlanName;
