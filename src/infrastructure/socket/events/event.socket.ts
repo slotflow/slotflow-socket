@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { io } from '../socket.server';
-import { redisClient } from "../../cache/redis/redis.client";
 import { jwtConfig } from "../../../config/env";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { registerEventHandlers } from "./event.handlers";
+import { redisClient } from "../../cache/redis/redis.client";
 import { logRedisData } from '../../../shared/utils/logRedisData';
 import { extractTokenFromCookie } from "../../../shared/utils/extractTokenFromCookie";
 
@@ -35,7 +35,7 @@ eventIo.use(async (socket, next) => {
       return next(new Error("Unauthorized"));
     }
 
-    const userId = decoded.id;
+    const userId = decoded.userId;
 
     if (!userId) {
       return next(new Error("Unauthorized - invalid payload"));

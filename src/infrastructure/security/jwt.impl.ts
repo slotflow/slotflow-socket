@@ -3,7 +3,7 @@ import { log } from "../../shared/logger/logger";
 import { ERROR_CODES } from "../../shared/utils/types";
 import { IJWT } from "../../domain/interfaces/security/IJwt";
 import { JwtClaims } from "../../domain/commands/jwt.commads";
-import jwt, { JsonWebTokenError, JwtPayload, TokenExpiredError } from "jsonwebtoken";
+import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
 import { AppError, BadRequestError, UnauthorizedError } from "../../shared/error/appError";
 
 export class JWTImpl implements IJWT {
@@ -63,7 +63,7 @@ export class JWTImpl implements IJWT {
         );
       }
 
-      if (error instanceof JsonWebTokenError) {
+      if (error instanceof jwt.JsonWebTokenError) {
         throw new UnauthorizedError(
           "Invalid token",
           ERROR_CODES.INVALID_TOKEN

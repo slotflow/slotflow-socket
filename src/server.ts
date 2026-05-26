@@ -17,7 +17,7 @@ const start = async () => {
     try {
         // await initOtel();
         await initDB();
-        // await initKafka();
+        await initKafka();
         await clearRedisSocketData();
 
         socketServer.listen(PORT, () => {

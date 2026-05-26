@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
 import { eventIo } from "./event.socket";
-import { redisClient } from "../../cache/redis/redis.client";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
+import { redisClient } from "../../cache/redis/redis.client";
 import { logRedisData } from "../../../shared/utils/logRedisData";
 import { ProviderJoin, ProviderSubscriptionUpdatedPayload, SlotEngageRequest } from "../types/event.types";
 
