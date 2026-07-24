@@ -52,9 +52,17 @@ export interface ProcessEventWrapperInput {
 // provider subscription updated event
 export interface ProviderSubscriptionUpdatedEventInput {
     socketData: {
-        providerId: string;
+        userId: string;
         subscriptionPlan: PlanName;
         startDate: Date;
         endDate: Date;
+  }
+}
+
+// stripe account status updated event
+export interface StripeAccountStatusUpdatedEventInput {
+    socketData: {
+        userId: string;
+        stripeAccountStatus: string;
   }
 }

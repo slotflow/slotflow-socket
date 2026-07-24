@@ -65,6 +65,7 @@ export const kafkaConfig = {
 
         sub: {
             planSubscribed: validator.requireEnv("KAFKA_PLAN_SUBSCRIBED"),
+            stripeAccountStatusUpdated: validator.requireEnv("KAFKA_STRIPE_ACCOUNT_STATUS_UPDATED"),
         },
         
         pub: {

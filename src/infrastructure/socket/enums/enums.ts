@@ -31,5 +31,6 @@ export enum EventSocketEnum {
     providerLeave = "provider:leave",
     slotLocked = "slot:locked",
     slotUnlockRequest = "slot:unlock:request",
-    slotUnlocked = "slot:unlocked"
+    slotUnlocked = "slot:unlocked",
+    stripeAccountStatusUpdated = "stripeAccountStatusUpdated",
 }
