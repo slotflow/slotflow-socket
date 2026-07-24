@@ -2,10 +2,15 @@ import { JwtPayload } from "jsonwebtoken";
 import { Role } from "../../../domain/enums/common.enums";
 
 export interface ProviderSubscriptionUpdatedPayload {
-    providerId: string;
+    userId: string;
     subscriptionPlan: string;
     startDate: Date;
     endDate: Date;
+}
+
+export interface StripeAccountStatusUpdatedPayload {
+    userId: string;
+    stripeAccountStatus: string;
 }
 
 export interface AccessTokenPayload extends JwtPayload {

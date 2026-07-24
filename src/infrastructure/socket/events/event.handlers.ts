@@ -4,7 +4,7 @@ import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { redisClient } from "../../cache/redis/redis.client";
 import { logRedisData } from "../../../shared/utils/logRedisData";
-import { ProviderJoin, ProviderSubscriptionUpdatedPayload, SlotEngageRequest } from "../types/event.types";
+import { ProviderJoin, ProviderSubscriptionUpdatedPayload, SlotEngageRequest, StripeAccountStatusUpdatedPayload } from "../types/event.types";
 
 export const registerEventHandlers = async (socket: Socket) => {
   log.info("Event socket connected");
@@ -84,5 +84,9 @@ export const registerEventHandlers = async (socket: Socket) => {
 
 // emit subscription activated
 export function emitSubscriptionActivated(payload: ProviderSubscriptionUpdatedPayload) {
-  eventIo.to(payload.providerId).emit(EventSocketEnum.subscriptionActivated, payload);
+  eventIo.to(payload.userId).emit(EventSocketEnum.subscriptionActivated, payload);
+};
+
+export function emitStripeAccountStatusUpdated(payload: StripeAccountStatusUpdatedPayload) {
+  eventIo.to(payload.userId).emit(EventSocketEnum.stripeAccountStatusUpdated, payload);
 };
