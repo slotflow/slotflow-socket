@@ -1,7 +1,7 @@
 import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { getAllMessagesUseCase, sendMessageUseCase } from ".";
-import { DecodedUser } from "../../application/dtos/common.dtos";
+import { AuthUser } from "../../application/dtos/common.dtos";
 import { getAllMessageSchema, sendMessageSchema } from "../../shared/zod/message.zod";
 import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllMessage.useCase";
@@ -17,7 +17,7 @@ class MessageController {
 
     async getMessages(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = getAllMessageSchema.parse({
                 toUserId: req.params.toUserId
             })
@@ -34,7 +34,7 @@ class MessageController {
 
     async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
-            const user = req.user as DecodedUser;
+            const user = req.user as AuthUser;
             const validatedData = sendMessageSchema.parse({
                 receiverId: req.params.toUserId,
                 file: req.file,

@@ -4,8 +4,8 @@ import { Message } from "../../../domain/entities/message.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { chatIo } from "../../../infrastructure/socket/chat/chat.socket";
 import { getReceiverSocketId } from "../../../infrastructure/socket/chat/chat.handlers";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrlService";
-import { IS3FileUploadService } from "../../../domain/interfaces/services/IS3FileUploadService";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
+import { IS3FileUploadService } from "../../interfaces/services/IS3FileUpload.service";
 import { IMessageRepository } from "../../../domain/interfaces/repositories/IMessage.repository";
 
 export class SendMessageUseCase {

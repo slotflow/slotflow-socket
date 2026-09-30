@@ -3,7 +3,7 @@ import { log } from "../../shared/logger/logger";
 import { handler, processEventWrapperUseCase } from ".";
 import { kafkaConsumer } from "../../infrastructure/messaging";
 import { SSSubKafkaEventPayload } from "../../application/dtos/kafka.dtos";
-import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
+import { IKafkaConsumerAdapter } from "../../application/interfaces/messaging/IKafkaConsumer.adapter";
 import { ProcessEventWrapperUseCase } from "../../application/usecase/kafka/processEventWrapper.useCase";
 
 class KafkaController {

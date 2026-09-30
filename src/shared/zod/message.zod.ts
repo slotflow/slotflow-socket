@@ -1,5 +1,5 @@
 import z from "zod";
-import { messageRegex, objectIdRegex } from "../utils/regex";
+import { messageRegex, objectIdRegex } from "../utils/constants/regex";
 
 export const getAllMessageSchema = z.object({
     toUserId: z.string().regex(objectIdRegex, "Invalid toUserId"),

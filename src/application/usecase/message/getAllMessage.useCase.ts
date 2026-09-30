@@ -1,7 +1,7 @@
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { BadRequestError } from "../../../shared/error/appError";
 import { GetAllMessageInput, GetAllMessagesOutput } from "../../dtos/common.dtos";
-import { ISignedUrlService } from "../../../domain/interfaces/services/ISignedUrlService";
+import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { IMessageRepository } from "../../../domain/interfaces/repositories/IMessage.repository";
 
 export class GetAllMessagesUseCase {

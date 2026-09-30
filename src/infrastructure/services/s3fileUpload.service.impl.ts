@@ -1,10 +1,10 @@
 import { awsConfig } from "../../config/env";
 import { Upload } from "@aws-sdk/lib-storage";
 import { S3Client } from "@aws-sdk/client-s3";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, BadRequestError } from "../../shared/error/appError";
-import { IS3keyGenerateService } from "../../domain/interfaces/services/IS3keyGenerateService";
-import { IS3FileUploadService, UploadFileOptions } from "../../domain/interfaces/services/IS3FileUploadService";
+import { IS3keyGenerateService } from "../../application/interfaces/services/IS3keyGenerate.service";
+import { IS3FileUploadService, UploadFileOptions } from "../../application/interfaces/services/IS3FileUpload.service";
 
 export class S3FileUploadServiceImpl implements IS3FileUploadService {
 

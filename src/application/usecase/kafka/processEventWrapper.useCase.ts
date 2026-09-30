@@ -2,7 +2,7 @@ import { log } from "../../../shared/logger/logger";
 import { appConfig, kafkaConfig } from "../../../config/env";
 import { EventStatus } from "../../../domain/enums/common.enums";
 import { ProcessedEvent } from "../../../domain/entities/ProcessedEvent.entity";
-import { IKafkaProducerAdapter } from "../../../domain/interfaces/messaging/IKafkaProducerAdapter";
+import { IKafkaProducerAdapter } from "../../interfaces/messaging/IKafkaProducer.adapter";
 import { IProcessedEventRepository } from "../../../domain/interfaces/repositories/IProcessedEvent.repository";
 import { DqMetaData, EventEnvelope, SSSubKafkaEventPayload, ProcessEventWrapperInput } from "../../dtos/kafka.dtos";
 

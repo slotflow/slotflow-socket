@@ -3,7 +3,7 @@ import { stopOtel } from "./otel.init";
 import { stopKafka } from "./kafka.init";
 import { log } from "../../shared/logger/logger";
 import { IncomingMessage, Server, ServerResponse } from "http";
-import { clearRedisSocketData } from "../../shared/utils/eventCleaner";
+import { clearRedisSocketData } from "../../shared/utils/helpers/eventCleaner";
 import { socketServer } from "../../infrastructure/socket/socket.server";
 
 export const setupGracefulShutdown = async (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {

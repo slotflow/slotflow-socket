@@ -24,8 +24,6 @@ export const mongodbConfig = {
 export const redisConfig = {
     redisUrl: validator.requireEnv("REDIS_URL"),
     redisToken: validator.requireEnv("REDIS_TOKEN"),
-    redisBlockListTtl: validator.requireNumber("REDIS_TTL_SECONDS_BLOCKLIST"),
-    redisOtpTtl: validator.requireNumber("REDIS_TTL_SECONDS_OTP"),
     redisSignedUrlTtl: validator.requireNumber("REDIS_TTL_SECONDS_SIGNED_URL"),
 };
 

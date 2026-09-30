@@ -5,8 +5,8 @@ import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { registerEventHandlers } from "./event.handlers";
 import { redisClient } from "../../cache/redis/redis.client";
-import { logRedisData } from '../../../shared/utils/logRedisData';
-import { extractTokenFromCookie } from "../../../shared/utils/extractTokenFromCookie";
+import { logRedisData } from '../../../shared/utils/helpers/logRedisData';
+import { extractTokenFromCookie } from "../../../shared/utils/helpers/extractTokenFromCookie";
 
 export const eventIo = io.of("/events");
 

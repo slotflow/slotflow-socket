@@ -1,9 +1,9 @@
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError } from "../../shared/error/appError";
 import { Kafka, Consumer, ConsumerCrashEvent } from "kafkajs";
 import { MessageHandler } from "../../application/dtos/kafka.dtos";
-import { IKafkaConsumerAdapter } from "../../domain/interfaces/messaging/IKafkaConsumerAdapter";
+import { IKafkaConsumerAdapter } from "../../application/interfaces/messaging/IKafkaConsumer.adapter";
 
 export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
     private consumer!: Consumer;
@@ -61,7 +61,6 @@ export class KafkaConsumerAdapter implements IKafkaConsumerAdapter {
             await this.consumer.subscribe({ topic, fromBeginning: false });
             this.handlers.set(topic, handler);
 
-            log.info(`Subscribed to topic: ${topic}`);
         } catch (error) {
             log.error(`Kafka subscribe failed [topic=${topic}]`, error as Error);
 

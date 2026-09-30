@@ -10,19 +10,11 @@ export interface MessageDTO {
     updatedAt: Date;
 }
 
-export interface DecodedUser {
+export interface AuthUser {
     id: string;
     role: Role;
-    googleAccessToken?: string;
-    googleRefreshToken?: string;
-    googleId?: string;
-    email?: string;
-    name?: string;
-    image: string | null;
-    connectOnly?: boolean;
-    exp?: number;
-    iat?: number;
-    userId?: string;
+    email: string;
+    name: string;
 };
 
 export interface SendMessageInput {

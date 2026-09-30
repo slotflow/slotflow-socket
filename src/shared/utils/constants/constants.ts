@@ -1,4 +1,4 @@
-import { IdType } from "./types";
+import { IdType } from "../types/enums";
 
 export const PREFIX_MAP: Record<IdType, string> = {
   [IdType.EVENT]: "sf_evt_",

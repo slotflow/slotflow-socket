@@ -1,11 +1,11 @@
 import { Redis } from "@upstash/redis";
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
 import { awsConfig, redisConfig } from "../../config/env";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { AppError, BadRequestError } from "../../shared/error/appError";
-import { ISignedUrlService } from "../../domain/interfaces/services/ISignedUrlService";
+import { ISignedUrlService } from "../../application/interfaces/services/ISignedUrl.service";
 
 export class SignedUrlServiceImpl implements ISignedUrlService {
     constructor(

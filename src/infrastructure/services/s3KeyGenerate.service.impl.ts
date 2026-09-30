@@ -1,8 +1,8 @@
-import { IdType } from '../../shared/utils/types';
-import { generateId } from '../../shared/utils/generateId';
+import { IdType } from '../../shared/utils/types/enums';
+import { generateId } from '../../shared/utils/helpers/generateId';
 import { BadRequestError } from '../../shared/error/appError';
 import { toAppError } from '../../shared/error/handleUnknownError';
-import { GenerateS3KeyPayload, IS3keyGenerateService } from "../../domain/interfaces/services/IS3keyGenerateService";
+import { GenerateS3KeyPayload, IS3keyGenerateService } from "../../application/interfaces/services/IS3keyGenerate.service";
 
 export class S3KeyGenerateServiceImpl implements IS3keyGenerateService {
 

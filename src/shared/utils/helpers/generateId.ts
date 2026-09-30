@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { PREFIX_MAP } from "./constants";
-import { AppError } from "../error/appError";
-import { ERROR_CODES, IdType } from "./types";
+import { AppError } from "../../error/appError";
+import { PREFIX_MAP } from "../constants/constants";
+import { ERROR_CODES, IdType } from "../types/enums";
 
 export const generateId = (type: IdType): string => {
     const prefix = PREFIX_MAP[type];

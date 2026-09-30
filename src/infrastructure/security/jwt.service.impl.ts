@@ -1,7 +1,7 @@
 import { jwtConfig } from "../../config/env";
 import { log } from "../../shared/logger/logger";
-import { ERROR_CODES } from "../../shared/utils/types";
-import { IJWT } from "../../domain/interfaces/security/IJwt";
+import { ERROR_CODES } from "../../shared/utils/types/enums";
+import { IJWT } from "../../application/interfaces/security/IJwt.service";
 import { JwtClaims } from "../../domain/commands/jwt.commads";
 import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
 import { AppError, BadRequestError, UnauthorizedError } from "../../shared/error/appError";

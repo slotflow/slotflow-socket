@@ -39,10 +39,10 @@ export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>
 
 // process event wrapper input
 export interface ProcessEventWrapperInput {
-  topic: string;
-  eventData: EventEnvelope<SSSubKafkaEventPayload>;
-  businessUseCase: { execute: (data: any) => Promise<void> };
-  payloadExtractor: (payload: SSSubKafkaEventPayload) => any;
+    topic: string;
+    eventData: EventEnvelope<SSSubKafkaEventPayload>;
+    businessUseCase: { execute: (data: any) => Promise<void> };
+    payloadExtractor: (payload: SSSubKafkaEventPayload) => any;
 }
 
 
@@ -54,9 +54,11 @@ export interface ProviderSubscriptionUpdatedEventInput {
     socketData: {
         userId: string;
         subscriptionPlan: PlanName;
-        startDate: Date;
-        endDate: Date;
-  }
+        currentPeriodStart: Date;
+        currentPeriodEnd: Date;
+        subscriptionStatus: string;
+        hasUsedTrial: boolean;
+    }
 }
 
 // stripe account status updated event
@@ -64,5 +66,5 @@ export interface StripeAccountStatusUpdatedEventInput {
     socketData: {
         userId: string;
         stripeAccountStatus: string;
-  }
+    }
 }

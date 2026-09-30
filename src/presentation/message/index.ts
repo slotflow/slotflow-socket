@@ -1,4 +1,4 @@
-import { messageRepository } from "../../infrastructure/repositoryImpl";
+import { messageRepository } from "../../infrastructure/repository";
 import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { s3FileUploadService, signedUrlService } from "../../infrastructure/services";
 import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllMessage.useCase";

@@ -1,4 +1,4 @@
-import { JWTImpl } from "./jwt.impl";
-import { IJWT } from "../../domain/interfaces/security/IJwt";
+import { JWTImpl } from "./jwt.service.impl";
+import { IJWT } from "../../application/interfaces/security/IJwt.service";
 
 export const jwtService: IJWT = new JWTImpl();

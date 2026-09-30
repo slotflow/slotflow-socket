@@ -1,11 +1,13 @@
 import { JwtPayload } from "jsonwebtoken";
-import { Role } from "../../../domain/enums/common.enums";
+import { Role } from "../../domain/enums/common.enums";
 
 export interface ProviderSubscriptionUpdatedPayload {
     userId: string;
     subscriptionPlan: string;
-    startDate: Date;
-    endDate: Date;
+    currentPeriodStart: Date;
+    currentPeriodEnd: Date;
+    subscriptionStatus: string;
+    hasUsedTrial: boolean;
 }
 
 export interface StripeAccountStatusUpdatedPayload {
@@ -27,3 +29,9 @@ export interface SlotEngageRequest {
 export interface ProviderJoin {
   providerId: string;
 }
+
+export type VideoRoomUser = {
+  id?: string;
+  name?: string;
+  profileImage?: string;
+};

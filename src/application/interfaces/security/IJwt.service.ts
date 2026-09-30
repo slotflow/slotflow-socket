@@ -1,4 +1,4 @@
-import { JwtClaims } from "../../commands/jwt.commads";
+import { JwtClaims } from "../../../domain/commands/jwt.commads";
 
 export interface IJWT {
 
