@@ -29,15 +29,11 @@ const messageSchema = new Schema<IMessage>({
     },
     image: {
         type: String
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
-});
+},
+    {
+        timestamps: true,
+    }
+);
 
 export const MessageModel = mongoose.model<IMessage>('Message', messageSchema)

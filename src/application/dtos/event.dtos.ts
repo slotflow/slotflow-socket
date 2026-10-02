@@ -1,6 +1,7 @@
 import { JwtPayload } from "jsonwebtoken";
 import { Role } from "../../domain/enums/common.enums";
 
+// provider subscription success update event payload
 export interface ProviderSubscriptionUpdatedPayload {
     userId: string;
     subscriptionPlan: string;
@@ -10,26 +11,25 @@ export interface ProviderSubscriptionUpdatedPayload {
     hasUsedTrial: boolean;
 }
 
+// stripe account status update event payload
 export interface StripeAccountStatusUpdatedPayload {
     userId: string;
     stripeAccountStatus: string;
 }
 
-export interface AccessTokenPayload extends JwtPayload {
-  id: string;
-  role: Role;
-};
-
+// provider service availability slot engagement event payload
 export interface SlotEngageRequest {
   providerId: string;
   date: string;
   slotId: string;
 }
 
+// provider join to the slot enagagement data event payload
 export interface ProviderJoin {
   providerId: string;
 }
 
+// Video call user payload
 export type VideoRoomUser = {
   id?: string;
   name?: string;

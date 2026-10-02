@@ -14,14 +14,15 @@ export class Message {
     }
 
     static create(props: CreateMessageProps) {
+        const now = new Date();
         return new Message({
             _id: "",
             senderId: props.senderId,
             receiverId: props.receiverId,
             text: props.text,
             image: props.image,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
         });
     }
 
