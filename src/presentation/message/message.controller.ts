@@ -2,6 +2,7 @@ import { log } from "../../shared/logger/logger";
 import { NextFunction, Request, Response } from "express";
 import { getAllMessagesUseCase, sendMessageUseCase } from ".";
 import { AuthUser } from "../../application/dtos/common.dtos";
+import { sendResponse } from "../../shared/utils/helpers/response";
 import { getAllMessageSchema, sendMessageSchema } from "../../shared/zod/message.zod";
 import { SendMessageUseCase } from "../../application/usecase/message/sendMessage.useCase";
 import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllMessage.useCase";
@@ -25,7 +26,7 @@ class MessageController {
                 ...validatedData,
                 fromUserId: user.id
             });
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
             log.error("getMessages failed : ", error as Error);
             next(error);
@@ -34,6 +35,7 @@ class MessageController {
 
     async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("send message controller")
             const user = req.user as AuthUser;
             const validatedData = sendMessageSchema.parse({
                 receiverId: req.params.toUserId,
@@ -44,7 +46,7 @@ class MessageController {
                 ...validatedData,
                 senderId: user.id
             });
-            res.status(200).json(result);
+            sendResponse(res,result);
         } catch (error) {
             log.error("sendMessage error : ", error as Error);
             next(error);

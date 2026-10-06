@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { IMessage } from "../models/message.model";
 import { Message } from "../../domain/entities/message.entity";
 
@@ -19,9 +20,8 @@ export class MessageMapper {
         const props = entity.getProps();
 
         return {
-            _id: props._id,
-            senderId: props.senderId,
-            receiverId: props.receiverId,
+            senderId: new Types.ObjectId(props.senderId),
+            receiverId: new Types.ObjectId(props.receiverId),
             text: props.text,
             image: props.image,
             createdAt: props.createdAt,

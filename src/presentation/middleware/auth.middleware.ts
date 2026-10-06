@@ -8,6 +8,7 @@ import { AuthUser, TimeZone } from "../../application/dtos/common.dtos";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log("auth middleware")
         const userId = req.headers["x-user-id"];
         const role = req.headers["x-user-role"];
         const name = req.headers["x-user-name"];

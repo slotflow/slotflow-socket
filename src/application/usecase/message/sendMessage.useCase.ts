@@ -1,11 +1,12 @@
-import { SendMessageInput } from "../../dtos/common.dtos";
 import { BadRequestError } from "../../../shared/error/appError";
 import { Message } from "../../../domain/entities/message.entity";
 import { toAppError } from "../../../shared/error/handleUnknownError";
 import { chatIo } from "../../../infrastructure/socket/chat/chat.socket";
-import { getReceiverSocketId } from "../../../infrastructure/socket/chat/chat.handlers";
+import { ChatSocketEnum } from "../../../infrastructure/socket/enums/enums";
+import { SendMessageInput, SendMessageOutput } from "../../dtos/common.dtos";
 import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
 import { IS3FileUploadService } from "../../interfaces/services/IS3FileUpload.service";
+import { getReceiverSocketId } from "../../../infrastructure/socket/chat/chat.handlers";
 import { IMessageRepository } from "../../../domain/interfaces/repositories/IMessage.repository";
 
 export class SendMessageUseCase {
@@ -15,7 +16,7 @@ export class SendMessageUseCase {
         private readonly signedUrlService: ISignedUrlService
     ) { };
 
-    async execute(input: SendMessageInput): Promise<Message> {
+    async execute(input: SendMessageInput): Promise<SendMessageOutput> {
         try {
             const { senderId, receiverId, text, file } = input;
             if (!senderId || !receiverId || (!text && !file)) {
@@ -38,18 +39,23 @@ export class SendMessageUseCase {
                 image: imageKey
             });
 
-            const newMessage = await this.messageRepository.createMessage(messageData);
+            const createdMessage = await this.messageRepository.createMessage(messageData);
 
             if (imageKey) {
-                newMessage.update({ image: await this.signedUrlService.save(imageKey) });
+                createdMessage.update({ image: await this.signedUrlService.save(imageKey) });
             }
 
             const receiverSocketId = await getReceiverSocketId(receiverId);
+
+            const newMessage = createdMessage.getProps();
+
             if (receiverSocketId) {
-                chatIo.to(receiverSocketId).emit("newMessage", newMessage);
+                chatIo.to(receiverSocketId).emit(ChatSocketEnum.newMessage, newMessage);
             }
 
-            return newMessage
+            return {
+                ...newMessage
+            };
         } catch (error: unknown) {
             throw toAppError(error, "Failed to send message");
         }

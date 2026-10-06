@@ -3,7 +3,8 @@ export enum ChatSocketEnum {
     typing = "typing",
     stopTyping = "stopTyping",
     connection = "connection",
-    disconnect = "disconnect"
+    disconnect = "disconnect",
+    newMessage = "newMessage"
 }
 
 export enum VideoSocketEnum {

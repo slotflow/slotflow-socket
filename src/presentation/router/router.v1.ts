@@ -3,6 +3,6 @@ import messageRoutes from '../message/message.routes';
 
 const router = Router();
 
-router.use('/message', messageRoutes);
+router.use('/messages', messageRoutes);
 
 export default router;

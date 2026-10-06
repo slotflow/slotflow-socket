@@ -1,7 +1,9 @@
-import { toAppError } from "../../../shared/error/handleUnknownError";
 import { BadRequestError } from "../../../shared/error/appError";
-import { GetAllMessageInput, GetAllMessagesOutput } from "../../dtos/common.dtos";
+import { Message } from "../../../domain/entities/message.entity";
+import { toAppError } from "../../../shared/error/handleUnknownError";
+import { MessageProps } from "../../../domain/contracts/message.contract";
 import { ISignedUrlService } from "../../interfaces/services/ISignedUrl.service";
+import { GetAllMessageInput, GetAllMessagesOutput } from "../../dtos/common.dtos";
 import { IMessageRepository } from "../../../domain/interfaces/repositories/IMessage.repository";
 
 export class GetAllMessagesUseCase {
@@ -28,7 +30,11 @@ export class GetAllMessagesUseCase {
                 })
             );
 
-            return messages;
+            const result: Array<MessageProps> = messages.map((m: Message) => {
+                return m.getProps();
+            })
+
+            return result;
         } catch (error: unknown) {
             throw toAppError(error, "Failed to get messages");
         }

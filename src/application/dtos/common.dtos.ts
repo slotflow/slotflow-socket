@@ -38,6 +38,7 @@ export interface SendMessageInput {
     text: string;
     file?: Express.Multer.File;
 }
+export type SendMessageOutput = MessageProps; 
 
 
 // Get all messages

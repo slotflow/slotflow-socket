@@ -1,14 +1,20 @@
-import { redisClient } from "../../cache/redis/redis.client";
 import { ChatSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { Namespace, Server, Socket } from "socket.io";
+import { redisClient } from "../../cache/redis/redis.client";
+
+async function getOnlineUsers() {
+  const keys = await redisClient.keys("chatSocket:*");
+  const onlineUsers = keys.map((key) => key.split(":")[1]);
+  console.log("onlineUsers : ",onlineUsers);
+  return onlineUsers;
+}
 
 export const registerChatHandlers = async (socket: Socket, chatIo: Namespace) => {
   log.info("Chat socket connected");
 
-  const queryUserId = socket.handshake.query.userId;
-  const userId = typeof queryUserId === "string" ? queryUserId : null;
-
+  const userId = socket.data.userId;
+  
   if (userId) {
     await redisClient.set(`chatSocket:${userId}`, socket.id);
   }
@@ -30,11 +36,6 @@ export const registerChatHandlers = async (socket: Socket, chatIo: Namespace) =>
     chatIo.emit(ChatSocketEnum.getOnlineUsers, await getOnlineUsers());
   });
 };
-
-async function getOnlineUsers() {
-  const keys = await redisClient.keys("chatSocket:*");
-  return keys.map((key) => key.split(":")[1]);
-}
 
 export async function getReceiverSocketId(userId: string): Promise<string | null> {
   return await redisClient.get(`chatSocket:${userId}`);
