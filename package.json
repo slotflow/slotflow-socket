@@ -23,6 +23,15 @@
     "validate": "tsc --noEmit && pnpm lint:check && pnpm format:check && pnpm build",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,mts,cts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.991.0",
     "@aws-sdk/lib-storage": "^3.848.0",
