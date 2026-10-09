@@ -179,55 +179,21 @@ The configured slot-lock TTL is 15 minutes.
 
 The Socket Service sits behind the SlotFlow API Gateway and provides real-time communication and message-related HTTP endpoints.
 
-```text
-                   ┌──────────────────────────┐
-                   │      SlotFlow Client     │
-                   │     React + TypeScript   │
-                   └────────────┬─────────────┘
-                                │
-                                ▼
-                   ┌──────────────────────────┐
-                   │       API Gateway        │
-                   │  HTTP / Socket.IO Proxy  │
-                   └────────────┬─────────────┘
-                                │
-                                ▼
-                   ┌──────────────────────────┐
-                   │     Socket Service       │
-                   │    Node.js + TypeScript  │
-                   │                          │
-                   │ ┌──────────────────────┐ │
-                   │ │   Chat Namespace     │ │
-                   │ ├──────────────────────┤ │
-                   │ │   Events Namespace   │ │
-                   │ ├──────────────────────┤ │
-                   │ │   Video Namespace    │ │
-                   │ ├──────────────────────┤ │
-                   │ │   HTTP Message API   │ │
-                   │ └──────────────────────┘ │
-                   └────────────┬─────────────┘
-                                │
-              ┌─────────────────┼──────────────────┐
-              │                 │                  │
-              ▼                 ▼                  ▼
-     ┌────────────────┐ ┌────────────────┐ ┌────────────────┐
-     │    MongoDB     │ │  Upstash Redis │ │ Apache Kafka   │
-     │                │ │                │ │                │
-     │ Messages       │ │ Presence       │ │ Domain Events  │
-     │ Processed      │ │ Typing State   │ │ Consumers      │
-     │ Events         │ │ Slot Locks     │ │ Retry / DLQ    │
-     └────────────────┘ └────────────────┘ └────────────────┘
-                                │
-                                ▼
-                       ┌────────────────┐
-                       │     AWS S3      │
-                       │ Chat Images     │
-                       └────────────────┘
+```mermaid
+flowchart TD
+    Client["SlotFlow Client"] --> Gateway["SlotFlow API Gateway"]
+    Gateway --> Socket["SlotFlow Socket Server"]
 
-                   ┌──────────────────────────┐
-                   │       Observability      │
-                   │ OpenTelemetry / OTLP     │
-                   └──────────────────────────┘
+    Backend["Main Backend Service"] <--> Kafka[["Apache Kafka"]]
+    Notification["Notification Service"] <--> Kafka
+    Payment["Payment Service"] <--> Kafka
+    Kafka <--> Socket
+
+    Socket <--> Redis[("Upstash Redis")]
+    Socket <--> AWS-S3[("AWS S3")]
+    Socket <--> MongoDB[("MongoDB")]
+
+    Socket --> OTEL["OpenTelemetry / OTLP"]
 ```
 
 ### Architecture Principles
@@ -360,51 +326,6 @@ Winston provides application logging.
 The inspected configuration schedules metrics collection at a 10-second interval.
 
 Actual metric availability depends on the instrumentation and exporter configuration.
-
-### Traces & Logs
-
-The service supports telemetry export through configurable OTLP endpoints and application logs through Winston integration.
-
-```text
-                 ┌────────────────────┐
-                 │   Socket Service   │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │ OpenTelemetry SDK  │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │    OTLP Export     │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │ Telemetry Backend  │
-                 └────────────────────┘
-
-                 Winston Application Logs
-```
-
----
-
-## Deployment
-
-### AWS EC2
-
-The SlotFlow Socket Service is deployed on **AWS EC2**.
-
-The instance must be configured to run the Node.js application and connect to the required external services, including MongoDB, Upstash Redis, Apache Kafka, AWS S3, and the configured telemetry endpoint.
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Cloud-AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white" alt="AWS" />
-  <img src="https://img.shields.io/badge/Compute-EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white" alt="Amazon EC2" />
-  <img src="https://img.shields.io/badge/Runtime-Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
-</p>
-
----
 
 ## Project Structure
 
