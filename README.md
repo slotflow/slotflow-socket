@@ -488,7 +488,7 @@ Copyright © 2026 SlotFlow.
 
 The SlotFlow Socket Service source code and associated assets are proprietary and confidential property of SlotFlow Technologies Private Limited.
 
-No permission is granted to use, copy, modify, redistribute, sublicense, or commercialize this software without explicit written permission from SlotFlow Technologies Private Limited.
+No permission is granted to use, copy, modify, redistribute, sublicense, or commercialize this software without explicit written permission from SlotFlow.
 
 Viewing the source code does not grant any license or rights to use, modify, distribute, or deploy the software.
 
