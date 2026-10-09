@@ -1,11 +1,11 @@
 export interface CreateMessageProps {
-    senderId: string;
-    receiverId: string;
-    text: string;
-    image?: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  image?: string;
 }
 
 export interface UpdateMessageProps {
-    text?: string;
-    image?: string;
+  text?: string;
+  image?: string;
 }

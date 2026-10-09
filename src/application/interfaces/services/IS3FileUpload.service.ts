@@ -5,7 +5,5 @@ export interface UploadFileOptions {
 }
 
 export interface IS3FileUploadService {
-
-    uploadFile(payload: UploadFileOptions): Promise<string>
-
+  uploadFile(payload: UploadFileOptions): Promise<string>;
 }

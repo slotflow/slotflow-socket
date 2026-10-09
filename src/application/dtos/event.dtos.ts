@@ -1,20 +1,17 @@
-import { JwtPayload } from "jsonwebtoken";
-import { Role } from "../../domain/enums/common.enums";
-
 // provider subscription success update event payload
 export interface ProviderSubscriptionUpdatedPayload {
-    userId: string;
-    subscriptionPlan: string;
-    currentPeriodStart: Date;
-    currentPeriodEnd: Date;
-    subscriptionStatus: string;
-    hasUsedTrial: boolean;
+  userId: string;
+  subscriptionPlan: string;
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
+  subscriptionStatus: string;
+  hasUsedTrial: boolean;
 }
 
 // stripe account status update event payload
 export interface StripeAccountStatusUpdatedPayload {
-    userId: string;
-    stripeAccountStatus: string;
+  userId: string;
+  stripeAccountStatus: string;
 }
 
 // provider service availability slot engagement event payload

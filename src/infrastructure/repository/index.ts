@@ -7,4 +7,5 @@ import { IProcessedEventRepository } from "../../domain/interfaces/repositories/
 export const messageRepository: IMessageRepository = new MessageRepositoryImpl();
 
 // processed event repository instance
-export const processedEventRepository: IProcessedEventRepository = new ProcessedEventRepositoryImpl();
+export const processedEventRepository: IProcessedEventRepository =
+  new ProcessedEventRepositoryImpl();

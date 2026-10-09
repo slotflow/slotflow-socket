@@ -1,12 +1,12 @@
+import { Namespace, Socket } from "socket.io";
 import { ChatSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
-import { Namespace, Server, Socket } from "socket.io";
 import { redisClient } from "../../cache/redis/redis.client";
 
 async function getOnlineUsers() {
   const keys = await redisClient.keys("chatSocket:*");
   const onlineUsers = keys.map((key) => key.split(":")[1]);
-  console.log("onlineUsers : ",onlineUsers);
+  console.log("onlineUsers : ", onlineUsers);
   return onlineUsers;
 }
 
@@ -14,7 +14,7 @@ export const registerChatHandlers = async (socket: Socket, chatIo: Namespace) =>
   log.info("Chat socket connected");
 
   const userId = socket.data.userId;
-  
+
   if (userId) {
     await redisClient.set(`chatSocket:${userId}`, socket.id);
   }

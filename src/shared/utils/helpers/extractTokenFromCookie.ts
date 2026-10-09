@@ -1,7 +1,4 @@
-export const extractTokenFromCookie = (
-  cookieString: string,
-  tokenName: string
-): string | null => {
+export const extractTokenFromCookie = (cookieString: string, tokenName: string): string | null => {
   const cookies = cookieString.split(";");
 
   for (const cookie of cookies) {

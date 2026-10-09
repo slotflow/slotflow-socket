@@ -3,8 +3,11 @@ import { processedEventRepository } from "../../infrastructure/repository";
 import { ProcessEventWrapperUseCase } from "../../application/usecase/kafka/processEventWrapper.useCase";
 import { ProviderSubscriptionUpdatedUseCase } from "../../application/usecase/kafka/subscriptionUpdated.useCase";
 
-export const processEventWrapperUseCase = new ProcessEventWrapperUseCase(processedEventRepository, kafkaProducer);
+export const processEventWrapperUseCase = new ProcessEventWrapperUseCase(
+  processedEventRepository,
+  kafkaProducer,
+);
 
 export const handler = {
-    planSubscribed: new ProviderSubscriptionUpdatedUseCase(),
+  planSubscribed: new ProviderSubscriptionUpdatedUseCase(),
 };

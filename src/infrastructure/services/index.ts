@@ -14,4 +14,7 @@ export const signedUrlService: ISignedUrlService = new SignedUrlServiceImpl(redi
 export const s3KeyGenerateService: IS3keyGenerateService = new S3KeyGenerateServiceImpl();
 
 // s3 file upload service instance
-export const s3FileUploadService: IS3FileUploadService = new S3FileUploadServiceImpl(s3Client, s3KeyGenerateService);
+export const s3FileUploadService: IS3FileUploadService = new S3FileUploadServiceImpl(
+  s3Client,
+  s3KeyGenerateService,
+);

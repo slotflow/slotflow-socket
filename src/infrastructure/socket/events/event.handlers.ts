@@ -3,7 +3,12 @@ import { eventIo } from "./event.socket";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { redisClient } from "../../cache/redis/redis.client";
-import { ProviderJoin, ProviderSubscriptionUpdatedPayload, SlotEngageRequest, StripeAccountStatusUpdatedPayload } from "../../../application/dtos/event.dtos";
+import {
+  ProviderJoin,
+  ProviderSubscriptionUpdatedPayload,
+  SlotEngageRequest,
+  StripeAccountStatusUpdatedPayload,
+} from "../../../application/dtos/event.dtos";
 
 export const registerEventHandlers = async (socket: Socket) => {
   log.info("Event socket connected");
@@ -46,7 +51,6 @@ export const registerEventHandlers = async (socket: Socket) => {
     socket.emit(EventSocketEnum.slotEngageApproved);
   });
 
-
   // Handle slot unlock request (MANUAL UNLOCK)
   socket.on(EventSocketEnum.slotUnlockRequest, async (data: SlotEngageRequest) => {
     const { providerId, date, slotId } = data;
@@ -63,7 +67,6 @@ export const registerEventHandlers = async (socket: Socket) => {
       slotId,
     });
   });
-
 
   // handle disconnect
   socket.on(EventSocketEnum.disconnect, async () => {
@@ -104,16 +107,13 @@ export const registerEventHandlers = async (socket: Socket) => {
       log.error(`Error during socket disconnect cleanup : ${error}`);
     }
   });
-
-}
-
+};
 
 // emit subscription activated
 export function emitSubscriptionActivated(payload: ProviderSubscriptionUpdatedPayload) {
   eventIo.to(payload.userId).emit(EventSocketEnum.subscriptionActivated, payload);
-};
-
+}
 
 export function emitStripeAccountStatusUpdated(payload: StripeAccountStatusUpdatedPayload) {
   eventIo.to(payload.userId).emit(EventSocketEnum.stripeAccountStatusUpdated, payload);
-};
+}

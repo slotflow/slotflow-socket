@@ -10,9 +10,18 @@
   "scripts": {
     "predev": "npx kill-port 5000",
     "dev": "tsx watch src/server.ts",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "type:check": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js",
-    "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle"
+    "bundle": "tsup src/server.ts --format esm --dts --out-dir dist-bundle",
+    "validate": "tsc --noEmit && pnpm lint:check && pnpm format:check && pnpm build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.991.0",
@@ -50,15 +59,21 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.0.3",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.9.9",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.71.1"
   }
 }

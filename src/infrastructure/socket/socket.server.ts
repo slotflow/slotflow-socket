@@ -6,9 +6,9 @@ import { serviceConfig } from "../../config/env";
 export const socketServer = http.createServer(app);
 
 export const io = new Server(socketServer, {
-    path: "/socket.io",
-    cors: {
-        origin: [serviceConfig.frontendUrl],
-        credentials: true,
-    },
+  path: "/socket.io",
+  cors: {
+    origin: [serviceConfig.frontendUrl],
+    credentials: true,
+  },
 });

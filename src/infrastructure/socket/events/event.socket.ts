@@ -1,11 +1,12 @@
-import jwt from 'jsonwebtoken';
-import { io } from '../socket.server';
+import jwt from "jsonwebtoken";
+import { io } from "../socket.server";
 import { jwtConfig } from "../../../config/env";
 import { EventSocketEnum } from "../enums/enums";
 import { log } from "../../../shared/logger/logger";
 import { registerEventHandlers } from "./event.handlers";
 import { redisClient } from "../../cache/redis/redis.client";
-import { logRedisData } from '../../../shared/utils/helpers/logRedisData';
+import { AccessTokenPayload } from "../../../shared/utils/types/types";
+import { logRedisData } from "../../../shared/utils/helpers/logRedisData";
 import { extractTokenFromCookie } from "../../../shared/utils/helpers/extractTokenFromCookie";
 
 export const eventIo = io.of("/events");
@@ -24,12 +25,12 @@ eventIo.use(async (socket, next) => {
       return next(new Error("Unauthorized - no token"));
     }
 
-    let decoded: any;
+    let decoded: AccessTokenPayload;
 
     try {
-      decoded = jwt.verify(token, jwtConfig.jwtSecret);
-    } catch (err: any) {
-      if (err.name === "TokenExpiredError") {
+      decoded = jwt.verify(token, jwtConfig.jwtSecret) as AccessTokenPayload;
+    } catch (err: unknown) {
+      if (err instanceof jwt.TokenExpiredError) {
         return next(new Error("TOKEN_EXPIRED"));
       }
       return next(new Error("Unauthorized"));
@@ -56,11 +57,11 @@ eventIo.use(async (socket, next) => {
 
     next();
   } catch (error) {
-    log.error("Socket auth failed", error as Error);
+    log.error("Socket auth failed", { error });
     next(new Error("Unauthorized"));
   }
 });
 
 eventIo.on(EventSocketEnum.connection, (socket) => {
-  registerEventHandlers(socket)
+  registerEventHandlers(socket);
 });

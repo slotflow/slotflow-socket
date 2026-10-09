@@ -4,14 +4,17 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { ERROR_CODES } from "../../shared/utils/types/enums";
 import { AppError, BadRequestError } from "../../shared/error/appError";
 import { IS3keyGenerateService } from "../../application/interfaces/services/IS3keyGenerate.service";
-import { IS3FileUploadService, UploadFileOptions } from "../../application/interfaces/services/IS3FileUpload.service";
+import {
+  IS3FileUploadService,
+  UploadFileOptions,
+} from "../../application/interfaces/services/IS3FileUpload.service";
+import { log } from "../../shared/logger/logger";
 
 export class S3FileUploadServiceImpl implements IS3FileUploadService {
-
   constructor(
     private readonly s3: S3Client,
-    private readonly s3KeyGenerateService: IS3keyGenerateService
-  ) { };
+    private readonly s3KeyGenerateService: IS3keyGenerateService,
+  ) {}
 
   async uploadFile(input: UploadFileOptions): Promise<string> {
     try {
@@ -41,14 +44,9 @@ export class S3FileUploadServiceImpl implements IS3FileUploadService {
       await upload.done();
 
       return s3Key;
-
     } catch (error: unknown) {
-      throw new AppError(
-        "Failed to upload file",
-        500,
-        false,
-        ERROR_CODES.INTERNAL_ERROR
-      );
+      log.error("error : ", { error });
+      throw new AppError("Failed to upload file", 500, false, ERROR_CODES.INTERNAL_ERROR);
     }
   }
 }

@@ -6,24 +6,25 @@ import { IncomingMessage, Server, ServerResponse } from "http";
 import { clearRedisSocketData } from "../../shared/utils/helpers/eventCleaner";
 import { socketServer } from "../../infrastructure/socket/socket.server";
 
-export const setupGracefulShutdown = async (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {
+export const setupGracefulShutdown = async (
+  server: Server<typeof IncomingMessage, typeof ServerResponse>,
+) => {
   const shutdown = async () => {
     log.info("Shutting down...");
 
     try {
-        await stopKafka();
-        await stopDB();
-        await stopOtel();
-        await clearRedisSocketData();
-        await new Promise((resolve) => socketServer.close(resolve));
+      await stopKafka();
+      await stopDB();
+      await stopOtel();
+      await clearRedisSocketData();
+      await new Promise((resolve) => socketServer.close(resolve));
 
       server.close(() => {
         log.info("Server closed");
         process.exit(0);
       });
-
     } catch (err) {
-      log.error("Shutdown error", err as Error);
+      log.error("Shutdown error", { err });
       process.exit(1);
     }
   };

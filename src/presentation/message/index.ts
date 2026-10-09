@@ -5,4 +5,8 @@ import { GetAllMessagesUseCase } from "../../application/usecase/message/getAllM
 
 export const getAllMessagesUseCase = new GetAllMessagesUseCase(messageRepository, signedUrlService);
 
-export const sendMessageUseCase = new SendMessageUseCase(messageRepository, s3FileUploadService, signedUrlService);
+export const sendMessageUseCase = new SendMessageUseCase(
+  messageRepository,
+  s3FileUploadService,
+  signedUrlService,
+);
