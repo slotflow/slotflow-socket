@@ -12,9 +12,11 @@ export interface KafkaClientAdapterProps {
   message: KafkaMessage;
 }
 
-// backend-main service subscribing kafka event payload
-export interface SSSubKafkaEventPayload<TSocketData = Record<string, string | number>> {
-  socketData: TSocketData;
+// socket service service subscribing kafka event payload
+export interface SSSubKafkaEventPayload<
+  T extends SSSubKafkaEventPayloadType = SSSubKafkaEventPayloadType,
+> {
+  socketData: T;
 }
 
 // dlq metadata
@@ -40,31 +42,42 @@ export interface EventEnvelope<TPayload, M = DqMetaData> {
 export type MessageHandler = (payload: KafkaClientAdapterProps) => Promise<void>;
 
 // process event wrapper input
-export interface ProcessEventWrapperInput<TPayloadData> {
+export interface ProcessEventWrapperInput<
+  T extends SSSubKafkaEventPayloadType = SSSubKafkaEventPayloadType,
+> {
   topic: string;
-  eventData: EventEnvelope<SSSubKafkaEventPayload<TPayloadData>>;
-  businessUseCase: { execute: (data: TPayloadData) => Promise<void> };
-  payloadExtractor: (payload: SSSubKafkaEventPayload<TPayloadData>) => TPayloadData;
+  eventData: EventEnvelope<SSSubKafkaEventPayload<T>>;
+  businessUseCase: { execute: (data: T) => Promise<void> };
 }
 
 // subscribing events
 
 // provider subscription updated event
 export interface ProviderSubscriptionUpdatedEventInput {
-  socketData: {
-    userId: string;
-    subscriptionPlan: PlanName;
-    currentPeriodStart: Date;
-    currentPeriodEnd: Date;
-    subscriptionStatus: string;
-    hasUsedTrial: boolean;
-  };
+  userId: string;
+  subscriptionPlan: PlanName;
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
+  subscriptionStatus: string;
+  hasUsedTrial: boolean;
 }
 
 // stripe account status updated event
-export interface StripeAccountStatusUpdatedEventInput {
-  socketData: {
-    userId: string;
-    stripeAccountStatus: string;
+// export interface StripeAccountStatusUpdatedEventInput {
+//   socketData: {
+//     userId: string;
+//     stripeAccountStatus: string;
+//   };
+// }
+
+export type SSSubKafkaEventPayloadType = ProviderSubscriptionUpdatedEventInput;
+
+export type SSSubKafkaEventPayloadMap = {
+  planSubscribed: ProviderSubscriptionUpdatedEventInput;
+};
+
+export type HandlerMap = {
+  [K in keyof SSSubKafkaEventPayloadMap]: {
+    execute: (input: SSSubKafkaEventPayloadMap[K]) => Promise<void>;
   };
-}
+};

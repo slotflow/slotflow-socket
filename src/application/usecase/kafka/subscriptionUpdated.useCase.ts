@@ -3,7 +3,7 @@ import { ProviderSubscriptionUpdatedEventInput } from "../../dtos/kafka.dtos";
 import { emitSubscriptionActivated } from "../../../infrastructure/socket/events/event.handlers";
 
 export class ProviderSubscriptionUpdatedUseCase {
-  async execute(input: ProviderSubscriptionUpdatedEventInput["socketData"]): Promise<void> {
+  async execute(input: ProviderSubscriptionUpdatedEventInput): Promise<void> {
     try {
       emitSubscriptionActivated(input);
     } catch (error) {
